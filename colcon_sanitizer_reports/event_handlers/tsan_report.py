@@ -64,8 +64,8 @@ class TSanReportEventHandler(EventHandlerExtensionPoint):
         for key in errors_map:
             if key not in self.final_summary_for_tsan_errors[type_of_error]:
                 self.final_summary_for_tsan_errors[type_of_error][key] = 0
-            self.final_summary_for_tsan_errors[type_of_error][key] +=
-            errors_map[key]
+            self.final_summary_for_tsan_errors[
+                type_of_error][key] += errors_map[key]
 
     def _insert_into_xml_tree(
       self, base_element, type_of_error, location, count):
@@ -110,9 +110,9 @@ class TSanReportEventHandler(EventHandlerExtensionPoint):
                     line_elements = line.split(" ")
                     # If package name is different from current package name,
                     # return for now.
-                    if '--package-name' in line:
-                        package_name_index =
-                        line_elements.index('--package-name') + 1
+                    if '"--package-name"' in line:
+                        package_name_index = line_elements.index(
+                            '"--package-name"') + 1
                     data_race_places_with_count = {}
                     lock_order_inversion_places_with_count = {}
                     heap_after_free_places_with_count = {}
@@ -274,14 +274,12 @@ class TSanReportEventHandler(EventHandlerExtensionPoint):
             for line in f:
                 if 'Test command:' in line:
                     line_elements = line.split(" ")
-                    if '--package-name' in line:
+                    if '"--package-name"' in line:
                         if line_elements[
-                            line_elements.index('--package-name') + 1]
+                            line_elements.index('"--package-name"') + 1]
                         not in test_suites:
-                            test_suites.append(
-                                str(line_elements[
-                                    line_elements.index('--package-name') + 1]
-                                    ))
+                            test_suites.append(str(line_elements[
+                                line_elements.index('"--package-name"') + 1]))
 
     def _to_xml_string(
       self, input_file_name, test_suites, prettyprint=True, encoding=None):
@@ -442,7 +440,7 @@ class TSanReportEventHandler(EventHandlerExtensionPoint):
         See:
         http://stackoverflow.com/questions/1707890/fast-way-to-filter-illegal-xml-unicode-chars-in-python
         """
-        illegal_unichrs = [
+        illegal_chrs = [
             (0x00, 0x08), (0x0B, 0x1F), (0x7F, 0x84), (0x86, 0x9F),
             (0xD800, 0xDFFF), (0xFDD0, 0xFDDF), (0xFFFE, 0xFFFF),
             (0x1FFFE, 0x1FFFF), (0x2FFFE, 0x2FFFF), (0x3FFFE, 0x3FFFF),
@@ -452,8 +450,8 @@ class TSanReportEventHandler(EventHandlerExtensionPoint):
             (0xDFFFE, 0xDFFFF), (0xEFFFE, 0xEFFFF), (0xFFFFE, 0xFFFFF),
             (0x10FFFE, 0x10FFFF)]
 
-        illegal_ranges = ["%s-%s" % (unichr(low), unichr(high))
-                          for (low, high) in illegal_unichrs
+        illegal_ranges = ["%s-%s" % (chr(low), chr(high))
+                          for (low, high) in illegal_chrs
                           if low < sys.maxunicode]
 
         illegal_xml_re = re.compile(u('[%s]') % u('').join(illegal_ranges))
