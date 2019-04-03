@@ -33,22 +33,22 @@ class TSanReportEventHandler(EventHandlerExtensionPoint):
         self.signal_handler_err_count = 0
         self.final_summary_for_tsan_errors = {}
         # Define TSan error signatures to look for
-        DATA_RACE_ERROR_SIGNATURE =
-        'WARNING: ThreadSanitizer: data race'
-        DEADLOCK_ERROR_SIGNATURE =
-        'WARNING: ThreadSanitizer: lock-order-inversion'
-        HEAP_USE_AFTER_FREE_ERROR_SIGNATURE =
-        'WARNING: ThreadSanitizer: lock-order-inversion'
-        SIGNAL_UNSAFE_ERROR_SIGNATURE =
-        'WARNING: ThreadSanitizer: signal-unsafe call inside of a signal'
-        SIGNAL_HANDLER_ERROR_SIGNATURE =
-        'WARNING: ThreadSanitizer: signal handler spoils errno'
+        self.DATA_RACE_ERROR_SIGNATURE = \
+            'WARNING: ThreadSanitizer: data race'
+        self.DEADLOCK_ERROR_SIGNATURE = \
+            'WARNING: ThreadSanitizer: lock-order-inversion'
+        self.HEAP_USE_AFTER_FREE_ERROR_SIGNATURE = \
+            'WARNING: ThreadSanitizer: lock-order-inversion'
+        self.SIGNAL_UNSAFE_ERROR_SIGNATURE = \
+            'WARNING: ThreadSanitizer: signal-unsafe call inside of a signal'
+        self.SIGNAL_HANDLER_ERROR_SIGNATURE = \
+            'WARNING: ThreadSanitizer: signal handler spoils errno'
         # Define map key strings, used to maintain counts of error signatures
-        DATA_RACE_MAP_KEY = 'data-race'
-        DEADLOCK_MAP_KEY = 'deadlock'
-        HEAP_USE_AFTER_FREE_MAP_KEY = 'heap-use-after-free'
-        SIGNAL_UNSAFE_MAP_KEY = 'signal-unsafe-call-in-signal'
-        SIGNAL_HANDLER_MAP_KEY = 'signal-handler-spoils-errno'
+        self.DATA_RACE_MAP_KEY = 'data-race'
+        self.DEADLOCK_MAP_KEY = 'deadlock'
+        self.HEAP_USE_AFTER_FREE_MAP_KEY = 'heap-use-after-free'
+        self.SIGNAL_UNSAFE_MAP_KEY = 'signal-unsafe-call-in-signal'
+        self.SIGNAL_HANDLER_MAP_KEY = 'signal-handler-spoils-errno'
 
     def __call__(self, event):
         input_file_name = "actual-log.txt"
@@ -123,23 +123,23 @@ class TSanReportEventHandler(EventHandlerExtensionPoint):
                         if not package_name == suite_name:
                             return
 
-                if DATA_RACE_ERROR_SIGNATURE in line:
+                if self.DATA_RACE_ERROR_SIGNATURE in line:
                     self.data_race_count += 1
                     find_place_of_data_race = True
                     line_after_data_race_msg = 0
-                if DEADLOCK_ERROR_SIGNATURE in line:
+                if self.DEADLOCK_ERROR_SIGNATURE in line:
                     self.lock_order_inversion_count += 1
                     find_place_of_lock_order_inversion = True
                     line_after_lock_order_inversion_msg = 0
-                if HEAP_USE_AFTER_FREE_ERROR_SIGNATURE in line:
+                if self.HEAP_USE_AFTER_FREE_ERROR_SIGNATURE in line:
                     self.heap_after_free_count += 1
                     find_place_of_heap_after_free = True
                     line_after_heap_after_free_msg = 0
-                if SIGNAL_UNSAFE_ERROR_SIGNATURE in line:
+                if self.SIGNAL_UNSAFE_ERROR_SIGNATURE in line:
                     self.signal_in_signal_count += 1
                     find_place_of_signal_in_signal = True
                     line_after_signal_in_signal_msg = 0
-                if SIGNAL_HANDLER_ERROR_SIGNATURE in line:
+                if self.SIGNAL_HANDLER_ERROR_SIGNATURE in line:
                     self.signal_handler_err_count += 1
                     find_place_of_signal_handler_err = True
                     line_after_signal_handler_err_msg = 0
@@ -159,11 +159,13 @@ class TSanReportEventHandler(EventHandlerExtensionPoint):
                         if data_race_place in data_race_places_with_count:
                             data_race_places_with_count[data_race_place] += 1
                             self._add_to_summary(
-                                data_race_places_with_count, DATA_RACE_MAP_KEY)
+                                data_race_places_with_count,
+                                self.DATA_RACE_MAP_KEY)
                         else:
                             data_race_places_with_count[data_race_place] = 1
                             self._add_to_summary(
-                                data_race_places_with_count, DATA_RACE_MAP_KEY)
+                                data_race_places_with_count,
+                                self.DATA_RACE_MAP_KEY)
                         find_place_of_data_race = False
                         line_after_data_race_msg = 0
                     else:
@@ -183,19 +185,19 @@ class TSanReportEventHandler(EventHandlerExtensionPoint):
                             continue
                         if lock_order_place == 'warning':
                             continue
-                        if lock_order_place in
-                        lock_order_inversion_places_with_count:
+                        if lock_order_place in \
+                                lock_order_inversion_places_with_count:
                             lock_order_inversion_places_with_count[
                                 lock_order_place] += 1
                             self._add_to_summary(
                                 lock_order_inversion_places_with_count,
-                                DEADLOCK_MAP_KEY)
+                                self.DEADLOCK_MAP_KEY)
                         else:
                             lock_order_inversion_places_with_count[
                                 lock_order_place] = 1
                             self._add_to_summary(
                                 lock_order_inversion_places_with_count,
-                                DEADLOCK_MAP_KEY)
+                                self.DEADLOCK_MAP_KEY)
                         find_place_of_lock_order_inversion = False
                         line_after_lock_order_inversion_msg = 0
                     else:
@@ -203,21 +205,21 @@ class TSanReportEventHandler(EventHandlerExtensionPoint):
 
                 if find_place_of_heap_after_free:
                     if line_after_heap_after_free_msg == 3:
-                        heap_after_free_place =
-                        line.split(" ")[-2].rstrip("\n\r")
-                        if heap_after_free_place in
-                        heap_after_free_places_with_count:
+                        heap_after_free_place = \
+                            line.split(" ")[-2].rstrip("\n\r")
+                        if heap_after_free_place in \
+                                heap_after_free_places_with_count:
                             heap_after_free_places_with_count[
                                 heap_after_free_place] += 1
                             self._add_to_summary(
                                 heap_after_free_places_with_count,
-                                HEAP_USE_AFTER_FREE_MAP_KEY)
+                                self.HEAP_USE_AFTER_FREE_MAP_KEY)
                         else:
                             heap_after_free_places_with_count[
                                 heap_after_free_place] = 1
                             self._add_to_summary(
                                 heap_after_free_places_with_count,
-                                HEAP_USE_AFTER_FREE_MAP_KEY)
+                                self.HEAP_USE_AFTER_FREE_MAP_KEY)
                         find_place_of_heap_after_free = False
                         line_after_heap_after_free_msg = 0
                     else:
@@ -225,21 +227,21 @@ class TSanReportEventHandler(EventHandlerExtensionPoint):
 
                 if find_place_of_signal_in_signal:
                     if line_after_signal_in_signal_msg == 3:
-                        signal_in_signal_place =
-                        line.split(" ")[-2].rstrip("\n\r")
-                        if signal_in_signal_place in
-                        signal_in_signal_places_with_count:
+                        signal_in_signal_place = \
+                            line.split(" ")[-2].rstrip("\n\r")
+                        if signal_in_signal_place in \
+                                signal_in_signal_places_with_count:
                             signal_in_signal_places_with_count[
                                 signal_in_signal_place] += 1
                             self._add_to_summary(
                                 signal_in_signal_places_with_count,
-                                SIGNAL_UNSAFE_MAP_KEY)
+                                self.SIGNAL_UNSAFE_MAP_KEY)
                         else:
                             signal_in_signal_places_with_count[
                                 signal_in_signal_place] = 1
                             self._add_to_summary(
                                 signal_in_signal_places_with_count,
-                                SIGNAL_UNSAFE_MAP_KEY)
+                                self.SIGNAL_UNSAFE_MAP_KEY)
                         find_place_of_signal_in_signal = False
                         line_after_signal_in_signal_msg = 0
                     else:
@@ -248,19 +250,19 @@ class TSanReportEventHandler(EventHandlerExtensionPoint):
                 if find_place_of_signal_handler_err:
                     if line_after_signal_handler_err_msg == 3:
                         signal_errno_place = line.split(" ")[-2].rstrip("\n\r")
-                        if signal_errno_place in
-                        signal_handler_err_places_with_count:
+                        if signal_errno_place in \
+                                signal_handler_err_places_with_count:
                             signal_handler_err_places_with_count[
                                 signal_errno_place] += 1
                             self._add_to_summary(
                                 signal_handler_err_places_with_count,
-                                SIGNAL_HANDLER_MAP_KEY)
+                                self.SIGNAL_HANDLER_MAP_KEY)
                         else:
                             signal_handler_err_places_with_count[
                                 signal_errno_place] = 1
                             self._add_to_summary(
                                 signal_handler_err_places_with_count,
-                                SIGNAL_HANDLER_MAP_KEY)
+                                self.SIGNAL_HANDLER_MAP_KEY)
                         find_place_of_signal_handler_err = False
                         line_after_signal_handler_err_msg = 0
                     else:
@@ -275,11 +277,12 @@ class TSanReportEventHandler(EventHandlerExtensionPoint):
                 if 'Test command:' in line:
                     line_elements = line.split(" ")
                     if '"--package-name"' in line:
-                        if line_elements[
-                            line_elements.index('"--package-name"') + 1]
-                        not in test_suites:
+                        package_name_index = \
+                            line_elements.index('"--package-name"')
+                        if line_elements[package_name_index + 1] not in \
+                                test_suites:
                             test_suites.append(str(line_elements[
-                                line_elements.index('"--package-name"') + 1]))
+                                package_name_index + 1]))
 
     def _to_xml_string(
       self, input_file_name, test_suites, prettyprint=True, encoding=None):
@@ -310,52 +313,54 @@ class TSanReportEventHandler(EventHandlerExtensionPoint):
 
             self._build_xml_doc(input_file_name, ts)
 
-            if DATA_RACE_MAP_KEY in self.final_summary_for_tsan_errors:
+            if self.DATA_RACE_MAP_KEY in self.final_summary_for_tsan_errors:
                 for location in self.final_summary_for_tsan_errors.get(
-                  DATA_RACE_MAP_KEY):
+                  self.DATA_RACE_MAP_KEY):
                     self._insert_into_xml_tree(
                         data_race_base,
-                        DATA_RACE_MAP_KEY,
+                        self.DATA_RACE_MAP_KEY,
                         location,
                         self.final_summary_for_tsan_errors
-                        [DATA_RACE_MAP_KEY][location])
-            if DEADLOCK_MAP_KEY in self.final_summary_for_tsan_errors:
+                        [self.DATA_RACE_MAP_KEY][location])
+            if self.DEADLOCK_MAP_KEY in self.final_summary_for_tsan_errors:
                 for location in self.final_summary_for_tsan_errors.get(
-                  DEADLOCK_MAP_KEY):
+                  self.DEADLOCK_MAP_KEY):
                     self._insert_into_xml_tree(
                         lock_order_inversion_base,
-                        DEADLOCK_MAP_KEY,
+                        self.DEADLOCK_MAP_KEY,
                         location,
                         self.final_summary_for_tsan_errors
-                        [DEADLOCK_MAP_KEY][location])
-            if HEAP_USE_AFTER_FREE_MAP_KEY in
-            self.final_summary_for_tsan_errors:
+                        [self.DEADLOCK_MAP_KEY][location])
+            if self.HEAP_USE_AFTER_FREE_MAP_KEY in \
+                    self.final_summary_for_tsan_errors:
                 for location in self.final_summary_for_tsan_errors.get(
-                  HEAP_USE_AFTER_FREE_MAP_KEY):
+                  self.HEAP_USE_AFTER_FREE_MAP_KEY):
                     self._insert_into_xml_tree(
                         heap_use_after_free_base,
-                        HEAP_USE_AFTER_FREE_MAP_KEY,
+                        self.HEAP_USE_AFTER_FREE_MAP_KEY,
                         location,
                         self.final_summary_for_tsan_errors
-                        [HEAP_USE_AFTER_FREE_MAP_KEY][location])
-            if SIGNAL_UNSAFE_MAP_KEY in self.final_summary_for_tsan_errors:
+                        [self.HEAP_USE_AFTER_FREE_MAP_KEY][location])
+            if self.SIGNAL_UNSAFE_MAP_KEY in \
+                    self.final_summary_for_tsan_errors:
                 for location in self.final_summary_for_tsan_errors.get(
-                  SIGNAL_UNSAFE_MAP_KEY):
+                  self.SIGNAL_UNSAFE_MAP_KEY):
                     self._insert_into_xml_tree(
                         signal_unsafe_call_base,
-                        SIGNAL_UNSAFE_MAP_KEY,
+                        self.SIGNAL_UNSAFE_MAP_KEY,
                         location,
                         self.final_summary_for_tsan_errors
-                        [SIGNAL_UNSAFE_MAP_KEY][location])
-            if SIGNAL_HANDLER_MAP_KEY in self.final_summary_for_tsan_errors:
+                        [self.SIGNAL_UNSAFE_MAP_KEY][location])
+            if self.SIGNAL_HANDLER_MAP_KEY in \
+                    self.final_summary_for_tsan_errors:
                 for location in self.final_summary_for_tsan_errors.get(
-                  SIGNAL_HANDLER_MAP_KEY):
+                  self.SIGNAL_HANDLER_MAP_KEY):
                     self._insert_into_xml_tree(
                         signal_handler_base,
-                        SIGNAL_HANDLER_MAP_KEY,
+                        self.SIGNAL_HANDLER_MAP_KEY,
                         location,
                         self.final_summary_for_tsan_errors
-                        [SIGNAL_HANDLER_MAP_KEY][location])
+                        [self.SIGNAL_HANDLER_MAP_KEY][location])
 
             test_element.set('suite-name', str(ts))
 
@@ -364,35 +369,35 @@ class TSanReportEventHandler(EventHandlerExtensionPoint):
             data_race_base.set(
                 'potential-unique',
                 str(len(self.final_summary_for_tsan_errors.get(
-                    DATA_RACE_MAP_KEY, []))))
+                    self.DATA_RACE_MAP_KEY, []))))
 
             lock_order_inversion_base.set(
                 'actual-reported', str(self.lock_order_inversion_count))
             lock_order_inversion_base.set(
                 'potential-unique',
                 str(len(self.final_summary_for_tsan_errors.get(
-                    DEADLOCK_MAP_KEY, []))))
+                    self.DEADLOCK_MAP_KEY, []))))
 
             heap_use_after_free_base.set(
                 'actual-reported', str(self.heap_after_free_count))
             heap_use_after_free_base.set(
                 'potential-unique',
                 str(len(self.final_summary_for_tsan_errors.get(
-                    HEAP_USE_AFTER_FREE_MAP_KEY, []))))
+                    self.HEAP_USE_AFTER_FREE_MAP_KEY, []))))
 
             signal_unsafe_call_base.set(
                 'actual-reported', str(self.signal_in_signal_count))
             signal_unsafe_call_base.set(
                 'potential-unique',
                 str(len(self.final_summary_for_tsan_errors.get(
-                    SIGNAL_UNSAFE_MAP_KEY, []))))
+                    self.SIGNAL_UNSAFE_MAP_KEY, []))))
 
             signal_handler_base.set(
                 'actual-reported', str(self.signal_handler_err_count))
             signal_handler_base.set(
                 'potential-unique',
                 str(len(self.final_summary_for_tsan_errors.get(
-                    SIGNAL_HANDLER_MAP_KEY, []))))
+                    self.SIGNAL_HANDLER_MAP_KEY, []))))
 
             self._reset_error_counters()
 
