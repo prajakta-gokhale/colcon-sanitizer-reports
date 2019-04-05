@@ -6,17 +6,17 @@ from colcon_core.plugin_system import satisfies_version
 
 
 class ASanReportEventHandler(EventHandlerExtensionPoint):
-    """
-    Generate a report of all Address Sanitizer output in packages.
-    """
+    """Generate a report of all Address Sanitizer output in packages."""
 
     ENABLED_BY_DEFAULT = False
 
     def __init__(self):
+        """Initialize."""
         super().__init__()
         satisfies_version(
             EventHandlerExtensionPoint.EXTENSION_POINT_VERSION, '^1.0')
 
     def __call__(self, event):
+        """Start parsing."""
         # TODO
         super().__call__(event)
