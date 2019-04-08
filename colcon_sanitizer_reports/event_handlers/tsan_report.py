@@ -124,6 +124,7 @@ class TSanReportEventHandler(EventHandlerExtensionPoint):
                             data_race_places_with_count[data_race_place] = 1
                         self._add_to_summary(
                             data_race_places_with_count, 'data-race')
+                        data_race_count += 1
                         break
                     else:
                         if '#0' in line:
@@ -148,6 +149,7 @@ class TSanReportEventHandler(EventHandlerExtensionPoint):
                                 lock_order_place] = 1
                         self._add_to_summary(
                             lock_order_inversion_places_with_count, 'deadlock')
+                        lock_order_inversion_count += 1
                         break
                     else:
                         line_after_lock_order_inversion_msg += 1
@@ -166,6 +168,7 @@ class TSanReportEventHandler(EventHandlerExtensionPoint):
                         self._add_to_summary(
                             heap_after_free_places_with_count,
                             'heap-use-after-free')
+                        heap_after_free_count += 1
                         break
                     else:
                         line_after_heap_after_free_msg += 1
@@ -184,6 +187,7 @@ class TSanReportEventHandler(EventHandlerExtensionPoint):
                         self._add_to_summary(
                             signal_in_signal_places_with_count,
                             'signal-unsafe-call-in-signal')
+                        signal_in_signal_count += 1
                         break
                     else:
                         line_after_signal_in_signal_msg += 1
@@ -201,6 +205,7 @@ class TSanReportEventHandler(EventHandlerExtensionPoint):
                         self._add_to_summary(
                             signal_handler_err_places_with_count,
                             'signal-handler-spoils-errno')
+                        signal_handler_err_count += 1
                         break
                     else:
                         line_after_signal_handler_err_msg += 1
