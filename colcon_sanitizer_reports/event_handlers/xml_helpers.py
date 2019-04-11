@@ -14,15 +14,15 @@ from six import u
 class XmlHelpers:
     """XML helper methods for Sanitizer output parsing scripts."""
 
-    def insert_into_xml_tree(
-            self, base_element, type_of_error, location, count):
+    def insert_into_xml_tree(self, base_element, location, count):
         """Insert error summary data into XML structure."""
         attrs = defaultdict(int)
         attrs['location'] = json.dumps(location)
         attrs['count'] = str(count)
-        ET.SubElement(base_element, type_of_error, attrs)
+        ET.SubElement(base_element, base_element.tag, attrs)
 
-    def clean_illegal_xml_chars(self, string_to_clean):
+    @staticmethod
+    def clean_illegal_xml_chars(string_to_clean):
         """Remove illegal unicode characters from the given XML string."""
         illegal_chrs = [
             (0x00, 0x08), (0x0B, 0x1F), (0x7F, 0x84), (0x86, 0x9F),
@@ -41,7 +41,8 @@ class XmlHelpers:
         illegal_xml_re = re.compile(u('[%s]') % u('').join(illegal_ranges))
         return illegal_xml_re.sub('', string_to_clean)
 
-    def pretty_print_xml_string(self, string_to_print, encoding):
+    @staticmethod
+    def pretty_print_xml_string(string_to_print, encoding):
         """Prett-print the given xml string."""
         # minidom.parseString() works just on
         # correctly encoded binary strings

@@ -1,8 +1,9 @@
 # Copyright 2019 Open Source Robotics Foundation
 # Licensed under the Apache License, version 2.0
 
+from collections import defaultdict
 from datetime import date
-import traceback
+import re
 import xml.etree.cElementTree as ET
 
 from colcon_core.event.test import TestFailure
@@ -12,26 +13,6 @@ from colcon_core.plugin_system import satisfies_version
 import colcon_output.event_handler.log as log
 from colcon_sanitizer_reports.event_handlers.xml_helpers import XmlHelpers
 from colcon_sanitizer_reports.report import Report
-
-
-class ErrorSignatures():
-    """Define sanitizer error signatures."""
-
-    DATA_RACE = 'data race'
-    DEADLOCK = 'lock order inversion'
-    HEAP_USE_AFTER_FREE = 'heap-use-after-free'
-    SIGNAL_UNSAFE_CALL = 'signal-unsafe call inside of a signal'
-    SIGNAL_HANDLER_SPOILS_ERRNO = 'signal handler spoils errno'
-
-
-class ReportNames():
-    """Define report representation of sanitizer errors."""
-
-    DATA_RACE = 'data-race'
-    DEADLOCK = 'lock-order-inversion'
-    HEAP_USE_AFTER_FREE = 'heap-use-after-free'
-    SIGNAL_UNSAFE_CALL = 'signal-unsafe-call inside-signal'
-    SIGNAL_HANDLER_SPOILS_ERRNO = 'signal-handler-spoils-errno'
 
 
 class TSanReportEventHandler(EventHandlerExtensionPoint):
@@ -45,18 +26,14 @@ class TSanReportEventHandler(EventHandlerExtensionPoint):
         satisfies_version(
             EventHandlerExtensionPoint.EXTENSION_POINT_VERSION, '^1.0')
 
-        self.data_race_count = 0
-        self.lock_order_inversion_count = 0
-        self.heap_after_free_count = 0
-        self.signal_in_signal_count = 0
-        self.signal_handler_err_count = 0
-        self.final_summary_for_tsan_errors = {}
+        self.count_by_line_by_error = \
+            defaultdict(lambda: defaultdict(lambda: 0))
 
     def __call__(self, event):
-        """Kick off parsing."""
+        """Start parsing."""
         data = event[0]
 
-        if (isinstance(data, TestFailure)):
+        if isinstance(data, TestFailure):
             jobs = event[1]
             self._start_tsan_output_parsing(jobs)
 
@@ -64,151 +41,22 @@ class TSanReportEventHandler(EventHandlerExtensionPoint):
         input_file = get_log_path() / jobs[0].identifier / \
             log.STDOUT_STDERR_LOG_FILENAME
         output_file = 'tsan_report_' + str(date.today()) + '.xml'
-        report = Report(input_file)
+        with open(input_file, 'r') as f_in:
+            report = Report(f_in.readlines())
         self._convert_log_to_xml(report, output_file, True, 'UTF-8')
 
-    def _add_to_summary(self, errors_map, type_of_error, total_count):
-        # Add individual test analysis to overall summary map
-        if type_of_error not in self.final_summary_for_tsan_errors:
-            self.final_summary_for_tsan_errors[type_of_error] = {}
-        for key in errors_map:
-            if key not in self.final_summary_for_tsan_errors[type_of_error]:
-                self.final_summary_for_tsan_errors[type_of_error][key] = 0
-            self.final_summary_for_tsan_errors[
-                type_of_error][key] += errors_map[key]
-
-    def _add_summary_to_report(self, map_key, base_element, total_count):
-        if map_key in self.final_summary_for_tsan_errors:
-            for location in self.final_summary_for_tsan_errors.get(map_key):
-                XmlHelpers.insert_into_xml_tree(
-                    base_element, map_key, location,
-                    self.final_summary_for_tsan_errors[map_key][location])
-
-        base_element.set('actual-reported', str(total_count))
-        base_element.set(
-            'potential-unique',
-            str(len(self.final_summary_for_tsan_errors.get(map_key, []))))
-
     def _build_xml_doc(self, report):
-
         for section in report.sections:
-            name = section.name
-
-            line_after_data_race_msg = 0
-            data_race_places_with_count = {}
-            line_after_lock_order_inversion_msg = 0
-            lock_order_inversion_places_with_count = {}
-            line_after_heap_after_free_msg = 0
-            heap_after_free_places_with_count = {}
-            line_after_signal_in_signal_msg = 0
-            signal_in_signal_places_with_count = {}
-            line_after_signal_handler_err_msg = 0
-            signal_handler_err_places_with_count = {}
-
-            for line in section.lines:
-                # Logic to determine place of issue
-                if name == ErrorSignatures.DATA_RACE:
-                    if line_after_data_race_msg == 1:
-                        if 'libtsan' in line:
-                            continue
-                        if len(line.split()) < 2:
-                            continue
-                        data_race_place = line.split(' ')[-2].rstrip('\n\r')
-                        if data_race_place == '':
-                            continue
-                        if 'null' in data_race_place:
-                            continue
-                        if data_race_place in data_race_places_with_count:
-                            data_race_places_with_count[data_race_place] += 1
-                        else:
-                            data_race_places_with_count[data_race_place] = 1
-                        self._add_to_summary(
-                            data_race_places_with_count, 'data-race')
-                        data_race_count += 1
+            for sub_section in section.sub_sections:
+                for masked_line in sub_section.masked_lines:
+                    # Find the first line that comes from our build.
+                    if re.match(
+                            r'^.*#X.*/home/jenkins.*$',
+                            masked_line
+                    ) is not None:
+                        self.count_by_line_by_error[section.name][masked_line]\
+                            += 1
                         break
-                    else:
-                        if '#0' in line:
-                            line_after_data_race_msg += 1
-
-                elif name == ErrorSignatures.DEADLOCK:
-                    if line_after_lock_order_inversion_msg == 8:
-                        lock_order_place = line.split(' ')[-2].rstrip('\n\r')
-                        if 'null' in lock_order_place or \
-                                'node_with_name' in lock_order_place:
-                            continue
-                        if lock_order_place == 'in'or \
-                                lock_order_place == 'thread' or \
-                                lock_order_place == 'warning':
-                            continue
-                        if lock_order_place in \
-                                lock_order_inversion_places_with_count:
-                            lock_order_inversion_places_with_count[
-                                lock_order_place] += 1
-                        else:
-                            lock_order_inversion_places_with_count[
-                                lock_order_place] = 1
-                        self._add_to_summary(
-                            lock_order_inversion_places_with_count, 'deadlock')
-                        lock_order_inversion_count += 1
-                        break
-                    else:
-                        line_after_lock_order_inversion_msg += 1
-
-                elif name == ErrorSignatures.HEAP_USE_AFTER_FREE:
-                    if line_after_heap_after_free_msg == 2:
-                        heap_after_free_place = \
-                            line.split(' ')[-2].rstrip('\n\r')
-                        if heap_after_free_place in \
-                                heap_after_free_places_with_count:
-                            heap_after_free_places_with_count[
-                                heap_after_free_place] += 1
-                        else:
-                            heap_after_free_places_with_count[
-                                heap_after_free_place] = 1
-                        self._add_to_summary(
-                            heap_after_free_places_with_count,
-                            'heap-use-after-free')
-                        heap_after_free_count += 1
-                        break
-                    else:
-                        line_after_heap_after_free_msg += 1
-
-                elif name == ErrorSignatures.SIGNAL_UNSAFE_CALL:
-                    if line_after_signal_in_signal_msg == 2:
-                        signal_in_signal_place = \
-                            line.split(' ')[-2].rstrip('\n\r')
-                        if signal_in_signal_place in \
-                                signal_in_signal_places_with_count:
-                            signal_in_signal_places_with_count[
-                                signal_in_signal_place] += 1
-                        else:
-                            signal_in_signal_places_with_count[
-                                signal_in_signal_place] = 1
-                        self._add_to_summary(
-                            signal_in_signal_places_with_count,
-                            'signal-unsafe-call-in-signal')
-                        signal_in_signal_count += 1
-                        break
-                    else:
-                        line_after_signal_in_signal_msg += 1
-
-                elif name == ErrorSignatures.SIGNAL_HANDLER_SPOILS_ERRNO:
-                    if line_after_signal_handler_err_msg == 2:
-                        signal_errno_place = line.split(' ')[-2].rstrip('\n\r')
-                        if signal_errno_place in \
-                                signal_handler_err_places_with_count:
-                            signal_handler_err_places_with_count[
-                                signal_errno_place] += 1
-                        else:
-                            signal_handler_err_places_with_count[
-                                signal_errno_place] = 1
-                        self._add_to_summary(
-                            signal_handler_err_places_with_count,
-                            'signal-handler-spoils-errno')
-                        signal_handler_err_count += 1
-                        break
-                    else:
-                        line_after_signal_handler_err_msg += 1
 
     def _to_xml_string(self, report, prettyprint=True, encoding=None):
         """
@@ -219,51 +67,34 @@ class TSanReportEventHandler(EventHandlerExtensionPoint):
         """
         test_element = ET.Element('testsuites')
 
-        data_race_base = ET.SubElement(
-            test_element, ReportNames.DATA_RACE)
-        lock_order_inversion_base = ET.SubElement(
-            test_element, ReportNames.DEADLOCK)
-        heap_use_after_free_base = ET.SubElement(
-            test_element, ReportNames.HEAP_USE_AFTER_FREE)
-        signal_unsafe_call_base = ET.SubElement(
-            test_element, ReportNames.SIGNAL_UNSAFE_CALL)
-        signal_handler_base = ET.SubElement(
-            test_element, ReportNames.SIGNAL_HANDLER_SPOILS_ERRNO)
-
         self._build_xml_doc(report)
 
-        self._add_summary_to_report(
-            ReportNames.DATA_RACE,
-            data_race_base, self.data_race_count)
-        self._add_summary_to_report(
-            ReportNames.DEADLOCK,
-            lock_order_inversion_base, self.lock_order_inversion_count)
-        self._add_summary_to_report(
-            ReportNames.HEAP_USE_AFTER_FREE,
-            heap_use_after_free_base, self.heap_after_free_count)
-        self._add_summary_to_report(
-            ReportNames.SIGNAL_UNSAFE_CALL,
-            signal_unsafe_call_base, self.signal_in_signal_count)
-        self._add_summary_to_report(
-            ReportNames.SIGNAL_HANDLER_SPOILS_ERRNO,
-            signal_handler_base, self.signal_handler_err_count)
+        element_by_error = {
+            error: ET.SubElement(test_element, error.replace(' ', '_'))
+            for error in self.count_by_line_by_error.keys()
+        }
 
-        xml_string: str
+        for error, count_by_line in self.count_by_line_by_error.items():
+            for line, count in count_by_line.items():
+                XmlHelpers().insert_into_xml_tree(
+                    element_by_error[error], line, count)
+
         try:
             xml_string = ET.tostring(
                 test_element, encoding=encoding, method='xml')
         except TypeError:
             print('Could not serialize parsed content into xml')
-            traceback.print_exc()
+            raise
 
-        xml_string = XmlHelpers.clean_illegal_xml_chars(
+        xml_string = XmlHelpers().clean_illegal_xml_chars(
             xml_string.decode(encoding or 'utf-8'))
 
         if prettyprint:
-            xml_string = XmlHelpers.pretty_print_xml_string(
+            xml_string = XmlHelpers().pretty_print_xml_string(
                 xml_string, encoding)
             if encoding:
                 xml_string = xml_string.decode(encoding)
+
         return xml_string
 
     def _convert_log_to_xml(
@@ -273,3 +104,17 @@ class TSanReportEventHandler(EventHandlerExtensionPoint):
             report, prettyprint=prettyprint, encoding=encoding)
         with open(output_file, 'w') as file:
             file.write(xml_string)
+
+
+def main():
+    output_file = 'tsan_report_' + str(date.today()) + '.xml'
+    with open(
+            '/Users/prajaktg/workspaces/colcon-sanitizer-reports/'
+            'colcon_sanitizer_reports/tsan.log', 'r') as tsan_f_in:
+        report = Report(tsan_f_in.readlines())
+    TSanReportEventHandler()._convert_log_to_xml(
+        report, output_file, True, 'UTF-8')
+
+
+if __name__ == '__main__':
+    main()
