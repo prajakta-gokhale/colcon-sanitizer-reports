@@ -1,5 +1,8 @@
+from collections import defaultdict
 import re
-from typing import Dict, Iterable, List, Optional, Tuple
+import xml.dom.minidom
+import xml.etree.cElementTree as ET
+from typing import Dict, List, Optional, Tuple
 
 
 class _SubSection:
@@ -84,28 +87,47 @@ class Report:
     Generate a report of all Sanitizer output in packages.
     """
 
-    sections: Tuple[_Section]
+    def __init__(self) -> None:
+        self._sections: List[_Section] = []
+        self._section_lines: Optional[List[str]] = None
 
-    def __init__(self, lines: Iterable[str]) -> None:
-        section_lines: Optional[List[str]] = None
-        sections: List[_Section] = []
-        for line in lines:
-            # Append lines to the current section.
-            if section_lines is None:
-                if re.match(
-                        r'^.*(WARNING|ERROR):.*Sanitizer:.*',
-                        line
-                ) is not None:
-                    section_lines = [line]
-            else:
-                section_lines.append(line)
-                # Stop if this is the summary line.
-                if re.match(
-                        r'^.*SUMMARY: .*Sanitizer: .*', line) is not None:
-                    sections.append(_Section(section_lines))
-                    section_lines = None
+    @property
+    def xml(self) -> str:
+        count_by_line_by_error = defaultdict(lambda: defaultdict(lambda: 0))
+        for section in self.sections:
+            for sub_section in section.sub_sections:
+                for masked_line in sub_section.masked_lines:
+                    # Find the first line that comes from our build.
+                    if re.match(r'^.*#X.*/home/jenkins.*$', masked_line) is not None:
+                        count_by_line_by_error[section.name][masked_line] += 1
+                        break
 
-        self.sections = tuple(sections)
+        test_element = ET.Element('testsuites')
+
+        element_by_error = {
+            error: ET.SubElement(test_element, error.replace(' ', '_'))
+            for error in count_by_line_by_error.keys()
+        }
+
+        for error, count_by_line in count_by_line_by_error.items():
+            element = element_by_error[error]
+            for line, count in count_by_line.items():
+                ET.SubElement(
+                    element,
+                    element.tag,
+                    {
+                        'location': line,
+                        'count': str(count),
+                    }
+                )
+
+        return xml.dom.minidom.parseString(
+            ET.tostring(test_element, encoding='unicode', method='xml')
+        ).toprettyxml()
+
+    @property
+    def sections(self) -> Tuple[_Section]:
+        return tuple(self._sections)
 
     @property
     def sections_by_name(self) -> Dict[str, Tuple[_Section]]:
@@ -116,3 +138,15 @@ class Report:
         sections_by_name = {k: tuple(v) for k, v in sections_by_name.items()}
 
         return sections_by_name
+
+    def add_line(self, line) -> None:
+        # Append lines to the current section.
+        if self._section_lines is None:
+            if re.match(r'^.*(WARNING|ERROR):.*Sanitizer:.*', line) is not None:
+                self._section_lines = [line]
+        else:
+            self._section_lines.append(line)
+            # Stop if this is the summary line.
+            if re.match(r'^.*SUMMARY: .*Sanitizer: .*', line) is not None:
+                self._sections.append(_Section(self._section_lines))
+                self._section_lines = None
