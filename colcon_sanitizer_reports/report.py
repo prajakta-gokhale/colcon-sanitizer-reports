@@ -1,14 +1,17 @@
 from collections import defaultdict
+import csv
 import re
+from io import StringIO
+from pathlib import Path
 import xml.dom.minidom
 import xml.etree.cElementTree as ET
 from typing import Dict, List, Optional, Tuple
-from pathlib import Path
 
 
 class _SubSection:
     lines: Tuple[str]
     masked_lines: Tuple[str]
+    key: Optional[str]
 
     def __init__(self, lines: List[str]) -> None:
         self.lines = tuple(lines)
@@ -24,43 +27,32 @@ class _SubSection:
 
         self.masked_lines = tuple(masked_lines)
 
+        self.key = None
+        for masked_line in self.masked_lines:
+            # Find the first line that comes from our build.
+            if str(Path.home()) in masked_line:
+                self.key = masked_line
+                break
+
 
 class _Section:
     """
     Contents for a single Sanitizer output section including header, \
     stack traces, and footer.
     """
+    package: str
     name: str
     sub_sections: Tuple[_SubSection]
 
-    def __init__(self, lines: List[str]) -> None:
+    def __init__(self, package: str, lines: List[str]) -> None:
         # Section name comes after 'Sanitizer: ',
         # and before any open paren or hex number.
+        self.package = package
         self.name = re.match(
             r'^.*Sanitizer: (?P<name>.+?)(?= \(| 0x[\dabcdef]+|\s*$)', lines[0]
         ).groupdict()['name']
 
-        # Remove log lines that pollute sanitizer output.
-        lines = [
-            line for line in lines
-            if re.match(
-                '^.*(process has died|signal_handler).*$', line) is None
-        ]
-
-        # Strip common prefix.
-        prefix = lines[0]
-        for line in lines:
-            for i, (c0, c1) in enumerate(zip(prefix, line)):
-                if c0 != c1:
-                    prefix = prefix[:i]
-                    break
-
-        lines = tuple(line[len(prefix):].rstrip() for line in lines)
-        for line in lines:
-            assert not line.startswith('15 INFO     [test_subscriber-2]')
-
-        # Divide into _SubSections.
-        # SubSections begin with a line that is not indented.
+        # Divide into _SubSections. SubSections begin with a line that is not indented.
         sub_section_lines: List[str] = []
         sub_sections: List[_SubSection] = []
         for line in lines:
@@ -90,18 +82,17 @@ class Report:
 
     def __init__(self) -> None:
         self._sections: List[_Section] = []
-        self._section_lines: Optional[List[str]] = None
+        self._package: Optional[str] = None
+
+        self._section_lines_by_prefix: Dict[str: List[str]] = {}
 
     @property
     def xml(self) -> str:
         count_by_line_by_error = defaultdict(lambda: defaultdict(lambda: 0))
         for section in self.sections:
             for sub_section in section.sub_sections:
-                for masked_line in sub_section.masked_lines:
-                    # Find the first line that comes from our build.
-                    if str(Path.home()) in masked_line:
-                        count_by_line_by_error[section.name][masked_line] += 1
-                        break
+                if sub_section.key is not None:
+                    count_by_line_by_error[section.name][sub_section.key] += 1
 
         test_element = ET.Element('testsuites')
 
@@ -127,6 +118,28 @@ class Report:
         ).toprettyxml()
 
     @property
+    def csv(self) -> str:
+        count_by_line_by_error_by_package = \
+            defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: 0)))
+
+        for section in self.sections:
+            for sub_section in section.sub_sections:
+                if sub_section.key is not None:
+                    count_by_line_by_error_by_package[section.package][section.name][
+                        sub_section.key] += 1
+
+        csv_f_out = StringIO()
+        writer = csv.writer(csv_f_out)
+        writer.writerow(['package', 'error', 'line', 'count'])
+
+        for package, count_by_line_by_error in count_by_line_by_error_by_package.items():
+            for error, count_by_line in count_by_line_by_error.items():
+                for line, count in count_by_line.items():
+                    writer.writerow([package, error, line.strip(), count])
+
+        return csv_f_out.getvalue()
+
+    @property
     def sections(self) -> Tuple[_Section]:
         return tuple(self._sections)
 
@@ -141,13 +154,37 @@ class Report:
         return sections_by_name
 
     def add_line(self, line) -> None:
-        # Append lines to the current section.
-        if self._section_lines is None:
-            if re.match(r'^.*(WARNING|ERROR):.*Sanitizer:.*', line) is not None:
-                self._section_lines = [line]
-        else:
-            self._section_lines.append(line)
-            # Stop if this is the summary line.
-            if re.match(r'^.*SUMMARY: .*Sanitizer: .*', line) is not None:
-                self._sections.append(_Section(self._section_lines))
-                self._section_lines = None
+        # If we have a new sanitizer section, start gathering its lines in self._sections_by_line
+        match = re.match(r'^(?P<prefix>.*)(WARNING|ERROR):.*Sanitizer:.*', line)
+        if match is not None:
+            prefix = match.groupdict()['prefix']
+            self._section_lines_by_prefix[prefix] = []
+
+        # Check if this line should belong to any of the sections we're currently building.
+        for prefix in self._section_lines_by_prefix.keys():
+            match = re.match(
+                r'^{prefix}(?P<line>.*)$'.format(prefix=re.escape(prefix)), line
+            )
+            if match is not None:
+                self._section_lines_by_prefix[prefix].append(match.groupdict()['line'])
+                break
+
+        # If this is the final line of a section, create the section and stop gathering lines for it
+        match = re.match(r'^(?P<prefix>.*)SUMMARY: .*Sanitizer: .*', line)
+        if match is not None:
+            prefix = match.groupdict()['prefix']
+            self._sections.append(_Section(self._package, self._section_lines_by_prefix[prefix]))
+            del self._section_lines_by_prefix[prefix]
+            return
+
+        # Keep track of the start of packages.
+        match = re.match(r'^.*Starting >>> (?P<package>\S+).*$', line)
+        if match is not None:
+            self._package = match.groupdict()['package']
+            return
+
+        # Keep track of the end of packages.
+        match = re.match(r'^.*Finished <<< .*$', line)
+        if match is not None:
+            self._package = None
+            return
