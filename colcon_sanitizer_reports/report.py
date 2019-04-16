@@ -3,6 +3,7 @@ import re
 import xml.dom.minidom
 import xml.etree.cElementTree as ET
 from typing import Dict, List, Optional, Tuple
+from pathlib import Path
 
 
 class _SubSection:
@@ -98,7 +99,7 @@ class Report:
             for sub_section in section.sub_sections:
                 for masked_line in sub_section.masked_lines:
                     # Find the first line that comes from our build.
-                    if re.match(r'^.*#X.*/home/jenkins.*$', masked_line) is not None:
+                    if str(Path.home()) in masked_line:
                         count_by_line_by_error[section.name][masked_line] += 1
                         break
 
