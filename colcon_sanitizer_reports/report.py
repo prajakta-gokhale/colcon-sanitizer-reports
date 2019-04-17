@@ -49,7 +49,7 @@ class _Section:
         # and before any open paren or hex number.
         self.package = package
         self.name = re.match(
-            r'^.*Sanitizer: (?P<name>.+?)(?= \(| 0x[\dabcdef]+|\s*$)', lines[0]
+            r'^.*Sanitizer: (?P<name>.+?)( \(| 0x[\dabcdef]+|\s*$)', lines[0]
         ).groupdict()['name']
 
         # Divide into _SubSections. SubSections begin with a line that is not indented.
@@ -153,18 +153,18 @@ class Report:
 
         return sections_by_name
 
-    def add_line(self, line) -> None:
+    def add_line(self, line: str) -> None:
+        line = line.rstrip()
+
         # If we have a new sanitizer section, start gathering its lines in self._sections_by_line
-        match = re.match(r'^(?P<prefix>.*)(WARNING|ERROR):.*Sanitizer:.*', line)
+        match = re.match(r'^(?P<prefix>.*?)(==\d+==|)(WARNING|ERROR):.*Sanitizer:.*', line)
         if match is not None:
             prefix = match.groupdict()['prefix']
             self._section_lines_by_prefix[prefix] = []
 
         # Check if this line should belong to any of the sections we're currently building.
         for prefix in self._section_lines_by_prefix.keys():
-            match = re.match(
-                r'^{prefix}(?P<line>.*)$'.format(prefix=re.escape(prefix)), line
-            )
+            match = re.match(r'^{prefix}(?P<line>.*)$'.format(prefix=re.escape(prefix)), line)
             if match is not None:
                 self._section_lines_by_prefix[prefix].append(match.groupdict()['line'])
                 break
