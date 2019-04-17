@@ -37,18 +37,3 @@ class ASanReportEventHandler(EventHandlerExtensionPoint):
 
             with open('asan_report.xml', 'w') as asan_report_xml_f_out:
                 asan_report_xml_f_out.write(self._report.xml)
-
-
-# TODO - Remove before contributing back. This is for local testing.
-def main():
-    report = Report()
-    tsan_log_f = '/Users/prajaktg/workspaces/colcon-sanitizer-reports/colcon_sanitizer_reports/asan.log'
-    with open(tsan_log_f, 'r') as in_file:
-        for line in in_file:
-            report.add_line(line)
-    with open('asan_report.xml', 'w') as tsan_report_xml_f_out:
-        tsan_report_xml_f_out.write(report.xml)
-
-
-if __name__ == '__main__':
-    main()
