@@ -26,14 +26,18 @@ class ASanReportEventHandler(EventHandlerExtensionPoint):
         data = event[0]
 
         if isinstance(data, JobEnded):
-            job = event[1]
-            asan_log_f = get_log_path() / job.identifier / STDOUT_STDERR_LOG_FILENAME
-            if not asan_log_f.exists():
-                return
+            self._handle(event)
 
-            with open(asan_log_f, 'r') as in_file:
-                for line in in_file:
-                    self._report.add_line(line)
+    def _handle(self, event):
+        """Convert test log file to xml, if present."""
+        job = event[1]
+        asan_log_f = get_log_path() / job.identifier / STDOUT_STDERR_LOG_FILENAME
+        if not asan_log_f.exists():
+            return
 
-            with open('asan_report.xml', 'w') as asan_report_xml_f_out:
-                asan_report_xml_f_out.write(self._report.xml)
+        with open(asan_log_f, 'r') as in_file:
+            for line in in_file:
+                self._report.add_line(line)
+
+        with open('asan_report.xml', 'w') as asan_report_xml_f_out:
+            asan_report_xml_f_out.write(self._report.xml)

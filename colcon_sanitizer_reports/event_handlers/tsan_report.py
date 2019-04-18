@@ -26,14 +26,18 @@ class TSanReportEventHandler(EventHandlerExtensionPoint):
         data = event[0]
 
         if isinstance(data, JobEnded):
-            job = event[1]
-            tsan_log_f = get_log_path() / job.identifier / STDOUT_STDERR_LOG_FILENAME
-            if not tsan_log_f.exists():
-                return
+            self._handle(event)
 
-            with open(tsan_log_f, 'r') as in_file:
-                for line in in_file:
-                    self._report.add_line(line)
+    def _handle(self, event):
+        """Convert test log file to xml, if present."""
+        job = event[1]
+        tsan_log_f = get_log_path() / job.identifier / STDOUT_STDERR_LOG_FILENAME
+        if not tsan_log_f.exists():
+            return
 
-            with open('tsan_report.xml', 'w') as tsan_report_xml_f_out:
-                tsan_report_xml_f_out.write(self._report.xml)
+        with open(tsan_log_f, 'r') as in_file:
+            for line in in_file:
+                self._report.add_line(line)
+
+        with open('tsan_report.xml', 'w') as tsan_report_xml_f_out:
+            tsan_report_xml_f_out.write(self._report.xml)
