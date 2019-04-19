@@ -9,8 +9,8 @@ from colcon_output.event_handler.log import STDOUT_STDERR_LOG_FILENAME
 from colcon_sanitizer_reports.report import Report
 
 
-class ASanReportEventHandler(EventHandlerExtensionPoint):
-    """Generate a report of all Address Sanitizer output in packages."""
+class SanitizerReportEventHandler(EventHandlerExtensionPoint):
+    """Generate a report of all Sanitizer reported ERRORs and WARNINGs."""
 
     ENABLED_BY_DEFAULT = False
 
@@ -29,15 +29,15 @@ class ASanReportEventHandler(EventHandlerExtensionPoint):
             self._handle(event)
 
     def _handle(self, event):
-        """Convert test log file to xml, if present."""
+        """Convert test log file to readable format."""
         job = event[1]
-        asan_log_f = get_log_path() / job.identifier / STDOUT_STDERR_LOG_FILENAME
-        if not asan_log_f.exists():
+        log_f = get_log_path() / job.identifier / STDOUT_STDERR_LOG_FILENAME
+        if not log_f.exists():
             return
 
-        with open(asan_log_f, 'r') as in_file:
+        with open(log_f, 'r') as in_file:
             for line in in_file:
                 self._report.add_line(line)
 
-        with open('asan_report.xml', 'w') as asan_report_xml_f_out:
-            asan_report_xml_f_out.write(self._report.xml)
+        with open('sanitizer_report.csv', 'w') as report_xml_f_out:
+            report_xml_f_out.write(self._report.csv)
