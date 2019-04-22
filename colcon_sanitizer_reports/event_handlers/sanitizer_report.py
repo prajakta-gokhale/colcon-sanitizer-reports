@@ -15,21 +15,18 @@ class SanitizerReportEventHandler(EventHandlerExtensionPoint):
     ENABLED_BY_DEFAULT = False
 
     def __init__(self):
-        """Initialize."""
         super().__init__()
         satisfies_version(EventHandlerExtensionPoint.EXTENSION_POINT_VERSION, '^1.0')
         self.enabled = False
         self._report = Report()
 
     def __call__(self, event):
-        """Start parsing."""
         data = event[0]
 
         if isinstance(data, JobEnded):
             self._handle(event)
 
     def _handle(self, event):
-        """Convert test log file to readable format."""
         job = event[1]
         log_f = get_log_path() / job.identifier / STDOUT_STDERR_LOG_FILENAME
         if not log_f.exists():

@@ -149,7 +149,7 @@ class _Section:
 
 
 class Report:
-    """Generate a report of all Sanitizer output in packages."""
+    """Generate a report from logged errors and warnings."""
 
     def __init__(self) -> None:
         """Initialize report fields."""
