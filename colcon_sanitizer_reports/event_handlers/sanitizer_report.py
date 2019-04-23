@@ -6,11 +6,11 @@ from colcon_core.event_handler import EventHandlerExtensionPoint
 from colcon_core.location import get_log_path
 from colcon_core.plugin_system import satisfies_version
 from colcon_output.event_handler.log import STDOUT_STDERR_LOG_FILENAME
-from colcon_sanitizer_reports.report import Report
+from colcon_sanitizer_reports.sanitizer_log_parser import SanitizerLogParser
 
 
 class SanitizerReportEventHandler(EventHandlerExtensionPoint):
-    """Generate a report of all Sanitizer reported ERRORs and WARNINGs."""
+    """Generate a report of all Sanitizer ERRORs and WARNINGs."""
 
     ENABLED_BY_DEFAULT = False
 
@@ -18,7 +18,7 @@ class SanitizerReportEventHandler(EventHandlerExtensionPoint):
         super().__init__()
         satisfies_version(EventHandlerExtensionPoint.EXTENSION_POINT_VERSION, '^1.0')
         self.enabled = False
-        self._report = Report()
+        self._log_parser = SanitizerLogParser()
 
     def __call__(self, event):
         data = event[0]
@@ -34,7 +34,7 @@ class SanitizerReportEventHandler(EventHandlerExtensionPoint):
 
         with open(log_f, 'r') as in_file:
             for line in in_file:
-                self._report.add_line(line)
+                self._log_parser.add_line(line)
 
-        with open('sanitizer_report.csv', 'w') as report_xml_f_out:
-            report_xml_f_out.write(self._report.csv)
+        with open('sanitizer_report.csv', 'w') as report_csv_f_out:
+            report_csv_f_out.write(self._log_parser.csv)
