@@ -2,7 +2,7 @@ from csv import DictReader
 import os
 from typing import Dict, Optional, Tuple
 
-from colcon_sanitizer_reports.report import Report
+from colcon_sanitizer_reports.sanitizer_log_parser import SanitizerLogParser
 import pytest
 
 
@@ -10,7 +10,7 @@ class Fixture:
 
     def __init__(self, resource_name: str) -> None:
         self.resource_name = resource_name
-        self._report: Optional[Report] = None
+        self._parser: Optional[SanitizerLogParser] = None
 
     @property
     def resource_path(self) -> str:
@@ -25,20 +25,20 @@ class Fixture:
         return self.resource_path + '/expected_output.csv'
 
     @property
-    def report(self) -> Report:
-        if self._report is None:
-            report = Report()
+    def parser(self) -> SanitizerLogParser:
+        if self._parser is None:
+            parser = SanitizerLogParser()
             with open(self.input_log_path, 'r') as input_log_f_in:
                 for line in input_log_f_in.readlines():
-                    report.add_line(line)
+                    parser.add_line(line)
 
-            self._report = report
+            self._parser = parser
 
-        return self._report
+        return self._parser
 
     @property
     def report_csv(self) -> DictReader:
-        return DictReader(self.report.csv.split('\n'))
+        return DictReader(self.parser.csv.split('\n'))
 
     @property
     def expected_csv(self) -> DictReader:

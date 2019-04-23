@@ -49,8 +49,8 @@ class _KeysFactory:
 
     @staticmethod
     def _make_default_keys(*, lines: Tuple[str]) -> Tuple[str]:
-        # Most sanitizer errors have the only/most significant stack trace first, so we don't search
-        # for anything special here.
+        # Most sanitizer errors have the only/most significant stack trace first in a subsection, so
+        # we assume we've already found the correct stack trace.
         return _KeysFactory._make_keys_base(
             lines=lines,
             stack_begin_regexes=(
@@ -141,8 +141,8 @@ class _Section:
         self.sub_sections = tuple(sub_sections)
 
 
-class Report:
-    """Generates a report from logged sanitizer errors and warnings."""
+class SanitizerLogParser:
+    """Parses logged sanitizer errors and warnings and generates report."""
 
     def __init__(self) -> None:
         # Holds count of errors seen. This is what will be in the report.
