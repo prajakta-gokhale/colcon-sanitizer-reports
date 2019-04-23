@@ -1,6 +1,6 @@
 from csv import DictReader
 import os
-from typing import Optional
+from typing import Dict, Optional, Tuple
 
 from colcon_sanitizer_reports.report import Report
 import pytest
@@ -52,14 +52,14 @@ def fixture(request) -> Fixture:
 
 
 def test_csv_has_field_names(fixture) -> None:
-    assert set(fixture.report_csv.fieldnames) == {'package', 'error_name', 'key', 'count'}
+    assert tuple(fixture.report_csv.fieldnames) == ('package', 'error_name', 'key', 'count')
 
 
 def test_csv_has_output(fixture) -> None:
     if fixture.resource_name == 'no_errors':
         assert len(list(fixture.report_csv)) == 0
     else:
-        assert len(list(fixture.report_csv)) != 0
+        assert len(list(fixture.report_csv)) > 0
 
 
 def test_csv_has_expected_line_count(fixture) -> None:
@@ -67,7 +67,8 @@ def test_csv_has_expected_line_count(fixture) -> None:
 
 
 def test_csv_has_expected_lines(fixture) -> None:
-    make_key = lambda line: tuple(line.items())
+    def make_key(line: Dict[str, str]) -> Tuple[str, ...]:
+        return tuple(line.items())
 
     expected_line_by_key = {make_key(line): line for line in fixture.expected_csv}
 
