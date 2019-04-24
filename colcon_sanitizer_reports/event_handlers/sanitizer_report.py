@@ -32,6 +32,7 @@ class SanitizerReportEventHandler(EventHandlerExtensionPoint):
         if not log_f.exists():
             return
 
+        self._log_parser.set_package(job.identifier)
         with open(log_f, 'r') as in_file:
             for line in in_file:
                 self._log_parser.add_line(line)

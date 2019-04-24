@@ -163,6 +163,9 @@ class SanitizerLogParser:
 
         return csv_f_out.getvalue()
 
+    def set_package(self, package: Optional[str]) -> None:
+        self._package = package
+
     def add_line(self, line: str) -> None:
         """Generate report from log file lines."""
         line = line.rstrip()
@@ -189,16 +192,4 @@ class SanitizerLogParser:
                 for key in sub_section.keys:
                     self._counts[(self._package, section.error_name, key)] += 1
             del self._section_lines_by_prefix[prefix]
-            return
-
-        # Keep track of the start of packages.
-        match = re.match(r'^.*Starting >>> (?P<package>\S+).*$', line)
-        if match is not None:
-            self._package = match.groupdict()['package']
-            return
-
-        # Keep track of the end of packages.
-        match = re.match(r'^.*Finished <<< .*$', line)
-        if match is not None:
-            self._package = None
             return
