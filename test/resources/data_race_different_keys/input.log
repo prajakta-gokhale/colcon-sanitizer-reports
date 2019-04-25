@@ -1,4 +1,3 @@
-Starting >>> data_race_different_keys
 26: execute_process.py         305 INFO     [test_subscriber-2] ==================
 26: execute_process.py         305 INFO     [test_subscriber-2] WARNING: ThreadSanitizer: data race (pid=26527)
 26: execute_process.py         305 INFO     [test_subscriber-2]   Write of size 4 at 0x7b2400000040 by main thread (mutexes: write M3936, write M3829):
@@ -173,4 +172,3 @@ Starting >>> data_race_different_keys
 26: execute_process.py         305 INFO     [test_subscriber-2] 
 26: execute_process.py         305 INFO     [test_subscriber-2] SUMMARY: ThreadSanitizer: data race /usr/include/asio/detail/impl/reactive_socket_service_base.ipp:44 in asio::detail::reactive_socket_service_base::construct(asio::detail::reactive_socket_service_base::base_implementation_type&)
 26: execute_process.py         305 INFO     [test_subscriber-2] ==================
-Finished <<< data_race_different_keys

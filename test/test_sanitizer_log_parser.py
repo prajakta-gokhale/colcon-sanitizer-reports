@@ -28,11 +28,14 @@ class Fixture:
     def parser(self) -> SanitizerLogParser:
         if self._parser is None:
             parser = SanitizerLogParser()
+            parser.set_package(self.resource_name)
             with open(self.input_log_path, 'r') as input_log_f_in:
                 for line in input_log_f_in.readlines():
                     parser.add_line(line)
+            parser.set_package(None)
 
             self._parser = parser
+            parser.set_package(None)
 
         return self._parser
 
@@ -52,7 +55,8 @@ def fixture(request) -> Fixture:
 
 
 def test_csv_has_field_names(fixture) -> None:
-    assert tuple(fixture.report_csv.fieldnames) == ('package', 'error_name', 'key', 'count')
+    assert tuple(fixture.report_csv.fieldnames) == \
+           ('package', 'error_name', 'key', 'count', 'sample_stack_trace')
 
 
 def test_csv_has_output(fixture) -> None:

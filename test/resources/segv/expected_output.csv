@@ -1,2 +1,11 @@
-package,error_name,key,count
-segv,SEGV on unknown address,rcutils_logging_get_logger_effective_level (/ros2_install/rcutils/lib/librcutils.so+0xX),1
+package,error_name,key,count,sample_stack_trace
+segv,SEGV on unknown address,rcutils_logging_get_logger_effective_level (/ros2_install/rcutils/lib/librcutils.so+0xX),1,"    #X 0xX  (/lib/x86_64-linux-gnu/libc.so.6+0xX)
+    #X 0xX  (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xX)
+    #X 0xX in rcutils_logging_get_logger_effective_level (/ros2_install/rcutils/lib/librcutils.so+0xX)
+    #X 0xX in rcutils_logging_logger_is_enabled_for (/ros2_install/rcutils/lib/librcutils.so+0xX)
+    #X 0xX in rclcpp::SignalHandler::uninstall() (/ros2_install/rclcpp/lib/librclcpp.so+0xX)
+    #X 0xX in rclcpp::SignalHandler::~SignalHandler() (/ros2_install/rclcpp/lib/librclcpp.so+0xX)
+    #X 0xX  (/lib/x86_64-linux-gnu/libc.so.6+0xX)
+    #X 0xX in exit (/lib/x86_64-linux-gnu/libc.so.6+0xX)
+    #X 0xX in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0xX)
+    #X 0xX in _start (/ros2_build/rclcpp_action/test_client+0xX)"
