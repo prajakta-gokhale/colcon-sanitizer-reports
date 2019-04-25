@@ -19,7 +19,7 @@ Starting >>> segv
 1:     #7 0x7f619e10a139 in exit (/lib/x86_64-linux-gnu/libc.so.6+0x43139)
 1:     #8 0x7f619e0e8b9d in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x21b9d)
 1:     #9 0x5628c0f80cd9 in _start (/ros2_build/rclcpp_action/test_client+0x4acd9)
-1:
+1: 
 1: AddressSanitizer can not provide additional info.
 1: SUMMARY: AddressSanitizer: SEGV (/lib/x86_64-linux-gnu/libc.so.6+0x18e5a0)
 1: ==5054==ABORTING

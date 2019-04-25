@@ -1,4 +1,3 @@
-Starting >>> data_race_and_lock_order_inversion_interleaved_output
 26: ../../../../build-tsan/test_communication/test_publisher_subscriber__rclcpp__rmw_fastrtps_cpp_.py:63: AssertionError
 26: ----------------------------- Captured stdout call -----------------------------
 26: [INFO] [test_publisher-3]: process started with pid [26542]
@@ -64,7 +63,7 @@ Starting >>> data_race_and_lock_order_inversion_interleaved_output
 26: execute_process.py         305 INFO     [test_subscriber-4]     #51 std::__shared_ptr<rclcpp::Node, (__gnu_cxx::_Lock_policy)2>::~__shared_ptr() /usr/include/c++/7/bits/shared_ptr_base.h:1123 (test_subscriber_cpp+0xe0a7)
 26: execute_process.py         305 INFO     [test_subscriber-4]     #52 std::shared_ptr<rclcpp::Node>::~shared_ptr() /usr/include/c++/7/bits/shared_ptr.h:93 (test_subscriber_cpp+0xe0a7)
 26: execute_process.py         305 INFO     [test_subscriber-4]     #53 main /ros2_install/src/ros2/system_tests/test_communication/test/test_subscriber.cpp:87 (test_subscriber_cpp+0xe0a7)
-26: execute_process.py         305 INFO     [test_subscriber-4]
+26: execute_process.py         305 INFO     [test_subscriber-4] 
 26: execute_process.py         305 INFO     [test_subscriber-4]   Previous read of size 8 at 0x7ba000000060 by thread T3:
 26: execute_process.py         305 INFO     [test_subscriber-4]     #0 recvmsg <null> (libtsan.so.0+0x3b48b)
 26: execute_process.py         305 INFO     [test_subscriber-4]     #1 asio::detail::socket_ops::recvfrom(int, iovec*, unsigned long, int, sockaddr*, unsigned long*, std::error_code&) /usr/include/asio/detail/impl/socket_ops.ipp:933 (libfastrtps.so.1+0x2f1f6c)
@@ -80,7 +79,7 @@ Starting >>> data_race_and_lock_order_inversion_interleaved_output
 26: execute_process.py         305 INFO     [test_subscriber-4]     #11 std::thread::_Invoker<std::tuple<void (eprosima::fastrtps::rtps::UDPTransportInterface::*)(eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t), eprosima::fastrtps::rtps::UDPTransportInterface*, eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t> >::operator()() /usr/include/c++/7/thread:243 (libfastrtps.so.1+0x2fe856)
 26: execute_process.py         305 INFO     [test_subscriber-4]     #12 std::thread::_State_impl<std::thread::_Invoker<std::tuple<void (eprosima::fastrtps::rtps::UDPTransportInterface::*)(eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t), eprosima::fastrtps::rtps::UDPTransportInterface*, eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t> > >::_M_run() /usr/include/c++/7/thread:186 (libfastrtps.so.1+0x2fe856)
 26: execute_process.py         305 INFO     [test_subscriber-4]     #13 <null> <null> (libstdc++.so.6+0xbd57e)
-26: execute_process.py         305 INFO     [test_subscriber-4]
+26: execute_process.py         305 INFO     [test_subscriber-4] 
 26: execute_process.py         305 INFO     [test_subscriber-4]   Location is file descriptor 6 created by main thread at:
 26: execute_process.py         305 INFO     [test_subscriber-4]     #0 socket <null> (libtsan.so.0+0x2ee83)
 26: execute_process.py         305 INFO     [test_subscriber-4]     #1 asio::detail::socket_ops::socket(int, int, int, std::error_code&) /usr/include/asio/detail/impl/socket_ops.ipp:1414 (libfastrtps.so.1+0x2d860a)
@@ -114,7 +113,7 @@ Starting >>> data_race_and_lock_order_inversion_interleaved_output
 26: execute_process.py         305 INFO     [test_subscriber-4]     #29 std::shared_ptr<rclcpp::Node> std::make_shared<rclcpp::Node, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&>(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) /usr/include/c++/7/bits/shared_ptr.h:707 (test_subscriber_cpp+0xdc8e)
 26: execute_process.py         305 INFO     [test_subscriber-4]     #30 std::shared_ptr<rclcpp::Node> rclcpp::Node::make_shared<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&>(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) /ros2_install/install-tsan/rclcpp/include/rclcpp/node.hpp:71 (test_subscriber_cpp+0xdc8e)
 26: execute_process.py         305 INFO     [test_subscriber-4]     #31 main /ros2_install/src/ros2/system_tests/test_communication/test/test_subscriber.cpp:87 (test_subscriber_cpp+0xdc8e)
-26: execute_process.py         305 INFO     [test_subscriber-4]
+26: execute_process.py         305 INFO     [test_subscriber-4] 
 26: execute_process.py         305 INFO     [test_subscriber-4]   Mutex M3932 (0x7f96953fd800) created at:
 26: execute_process.py         305 INFO     [test_subscriber-4]     #0 pthread_mutex_lock <null> (libtsan.so.0+0x3faeb)
 26: execute_process.py         305 INFO     [test_subscriber-4]     #1 __gthread_mutex_lock /usr/include/x86_64-linux-gnu/c++/7/bits/gthr-default.h:748 (libfastrtps.so.1+0x255fd3)
@@ -137,7 +136,7 @@ Starting >>> data_race_and_lock_order_inversion_interleaved_output
 26: execute_process.py         305 INFO     [test_subscriber-4]     #18 std::shared_ptr<rclcpp::Node> std::make_shared<rclcpp::Node, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&>(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) /usr/include/c++/7/bits/shared_ptr.h:707 (test_subscriber_cpp+0xdc8e)
 26: execute_process.py         305 INFO     [test_subscriber-4]     #19 std::shared_ptr<rclcpp::Node> rclcpp::Node::make_shared<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&>(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) /ros2_install/install-tsan/rclcpp/include/rclcpp/node.hpp:71 (test_subscriber_cpp+0xdc8e)
 26: execute_process.py         305 INFO     [test_subscriber-4]     #20 main /ros2_install/src/ros2/system_tests/test_communication/test/test_subscriber.cpp:87 (test_subscriber_cpp+0xdc8e)
-26: execute_process.py         305 INFO     [test_subscriber-4]
+26: execute_process.py         305 INFO     [test_subscriber-4] 
 26: execute_process.py         305 INFO     [test_subscriber-4]   Mutex M3829 (0x7f96953fd320) created at:
 26: execute_process.py         305 INFO     [test_subscriber-4]     #0 pthread_mutex_lock <null> (libtsan.so.0+0x3faeb)
 26: execute_process.py         305 INFO     [test_subscriber-4]     #1 __gthread_mutex_lock /usr/include/x86_64-linux-gnu/c++/7/bits/gthr-default.h:748 (libfastrtps.so.1+0x24840f)
@@ -161,7 +160,7 @@ Starting >>> data_race_and_lock_order_inversion_interleaved_output
 26: execute_process.py         305 INFO     [test_subscriber-4]     #19 std::shared_ptr<rclcpp::Node> std::make_shared<rclcpp::Node, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&>(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) /usr/include/c++/7/bits/shared_ptr.h:707 (test_subscriber_cpp+0xdc8e)
 26: execute_process.py         305 INFO     [test_subscriber-4]     #20 std::shared_ptr<rclcpp::Node> rclcpp::Node::make_shared<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&>(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) /ros2_install/install-tsan/rclcpp/include/rclcpp/node.hpp:71 (test_subscriber_cpp+0xdc8e)
 26: execute_process.py         305 INFO     [test_subscriber-4]     #21 main /ros2_install/src/ros2/system_tests/test_communication/test/test_subscriber.cpp:87 (test_subscriber_cpp+0xdc8e)
-26: execute_process.py         305 INFO     [test_subscriber-4]
+26: execute_process.py         305 INFO     [test_subscriber-4] 
 26: execute_process.py         305 INFO     [test_subscriber-4]   Thread T3 (tid=26552, finished) created by main thread at:
 26: execute_process.py         305 INFO     [test_subscriber-4]     #0 pthread_create <null> (libtsan.so.0+0x2bcfe)
 26: execute_process.py         305 INFO     [test_subscriber-4]     #1 std::thread::_M_start_thread(std::unique_ptr<std::thread::_State, std::default_delete<std::thread::_State> >, void (*)()) <null> (libstdc++.so.6+0xbd834)
@@ -188,7 +187,7 @@ Starting >>> data_race_and_lock_order_inversion_interleaved_output
 26: execute_process.py         305 INFO     [test_publisher-3] ==================
 26: execute_process.py         305 INFO     [test_publisher-3] WARNING: ThreadSanitizer: lock-order-inversion (potential deadlock) (pid=26542)
 26: execute_process.py         305 INFO     [test_publisher-3]   Cycle in lock order graph: M28001314164204480 (0x000000000000) => M33630813698411408 (0x000000000000) => M28001314164204480
-26: execute_process.py         305 INFO     [test_publisher-3]
+26: execute_process.py         305 INFO     [test_publisher-3] 
 26: execute_process.py         305 INFO     [test_publisher-3]   Mutex M33630813698411408 acquired here while holding mutex M28001314164204480 in thread T5:
 26: execute_process.py         305 INFO     [test_publisher-3]     #0 pthread_mutex_lock <null> (libtsan.so.0+0x3faeb)
 26: execute_process.py         305 INFO     [test_publisher-3]     #1 __gthread_mutex_lock /usr/include/x86_64-linux-gnu/c++/7/bits/gthr-default.h:748 (libfastrtps.so.1+0x16fe37)
@@ -207,9 +206,9 @@ Starting >>> data_race_and_lock_order_inversion_interleaved_output
 26: execute_process.py         305 INFO     [test_publisher-3]     #14 std::thread::_Invoker<std::tuple<void (eprosima::fastrtps::rtps::UDPTransportInterface::*)(eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t), eprosima::fastrtps::rtps::UDPTransportInterface*, eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t> >::operator()() /usr/include/c++/7/thread:243 (libfastrtps.so.1+0x2fe856)
 26: execute_process.py         305 INFO     [test_publisher-3]     #15 std::thread::_State_impl<std::thread::_Invoker<std::tuple<void (eprosima::fastrtps::rtps::UDPTransportInterface::*)(eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t), eprosima::fastrtps::rtps::UDPTransportInterface*, eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t> > >::_M_run() /usr/include/c++/7/thread:186 (libfastrtps.so.1+0x2fe856)
 26: execute_process.py         305 INFO     [test_publisher-3]     #16 <null> <null> (libstdc++.so.6+0xbd57e)
-26: execute_process.py         305 INFO     [test_publisher-3]
+26: execute_process.py         305 INFO     [test_publisher-3] 
 26: execute_process.py         305 INFO     [test_publisher-3]     Hint: use TSAN_OPTIONS=second_deadlock_stack=1 to get more informative warning message
-26: execute_process.py         305 INFO     [test_publisher-3]
+26: execute_process.py         305 INFO     [test_publisher-3] 
 26: execute_process.py         305 INFO     [test_publisher-3]   Mutex M28001314164204480 acquired here while holding mutex M33630813698411408 in thread T5:
 26: execute_process.py         305 INFO     [test_publisher-3]     #0 pthread_mutex_lock <null> (libtsan.so.0+0x3faeb)
 26: execute_process.py         305 INFO     [test_publisher-3]     #1 __gthread_mutex_lock /usr/include/x86_64-linux-gnu/c++/7/bits/gthr-default.h:748 (libfastrtps.so.1+0x16fe37)
@@ -228,7 +227,7 @@ Starting >>> data_race_and_lock_order_inversion_interleaved_output
 26: execute_process.py         305 INFO     [test_publisher-3]     #14 std::thread::_Invoker<std::tuple<void (eprosima::fastrtps::rtps::UDPTransportInterface::*)(eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t), eprosima::fastrtps::rtps::UDPTransportInterface*, eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t> >::operator()() /usr/include/c++/7/thread:243 (libfastrtps.so.1+0x2fe856)
 26: execute_process.py         305 INFO     [test_publisher-3]     #15 std::thread::_State_impl<std::thread::_Invoker<std::tuple<void (eprosima::fastrtps::rtps::UDPTransportInterface::*)(eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t), eprosima::fastrtps::rtps::UDPTransportInterface*, eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t> > >::_M_run() /usr/include/c++/7/thread:186 (libfastrtps.so.1+0x2fe856)
 26: execute_process.py         305 INFO     [test_publisher-3]     #16 <null> <null> (libstdc++.so.6+0xbd57e)
-26: execute_process.py         305 INFO     [test_publisher-3]
+26: execute_process.py         305 INFO     [test_publisher-3] 
 26: execute_process.py         305 INFO     [test_publisher-3]   Thread T5 (tid=26553, running) created by main thread at:
 26: execute_process.py         305 INFO     [test_publisher-3]     #0 pthread_create <null> (libtsan.so.0+0x2bcfe)
 26: execute_process.py         305 INFO     [test_publisher-3]     #1 std::thread::_M_start_thread(std::unique_ptr<std::thread::_State, std::default_delete<std::thread::_State> >, void (*)()) <null> (libstdc++.so.6+0xbd834)
@@ -256,14 +255,13 @@ Starting >>> data_race_and_lock_order_inversion_interleaved_output
 26: execute_process.py         305 INFO     [test_publisher-3]     #23 std::shared_ptr<rclcpp::Node> std::make_shared<rclcpp::Node, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&>(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) /usr/include/c++/7/bits/shared_ptr.h:707 (test_publisher_cpp+0xaf8d)
 26: execute_process.py         305 INFO     [test_publisher-3]     #24 std::shared_ptr<rclcpp::Node> rclcpp::Node::make_shared<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&>(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) /ros2_install/install-tsan/rclcpp/include/rclcpp/node.hpp:71 (test_publisher_cpp+0xaf8d)
 26: execute_process.py         305 INFO     [test_publisher-3]     #25 main /ros2_install/src/ros2/system_tests/test_communication/test/test_publisher.cpp:71 (test_publisher_cpp+0xaf8d)
-26: execute_process.py         305 INFO     [test_publisher-3]
+26: execute_process.py         305 INFO     [test_publisher-3] 
 26: execute_process.py         305 INFO     [test_publisher-3] SUMMARY: ThreadSanitizer: lock-order-inversion (potential deadlock) (/usr/lib/x86_64-linux-gnu/libtsan.so.0+0x3faeb) in __interceptor_pthread_mutex_lock
 26: execute_process.py         305 INFO     [test_publisher-3] ==================
 26: execute_process.py         305 INFO     [test_subscriber-4]     #22 std::shared_ptr<rclcpp::Node> std::allocate_shared<rclcpp::Node, std::allocator<rclcpp::Node>, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&>(std::allocator<rclcpp::Node> const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) /usr/include/c++/7/bits/shared_ptr.h:691 (test_subscriber_cpp+0xdc8e)
 26: execute_process.py         305 INFO     [test_subscriber-4]     #23 std::shared_ptr<rclcpp::Node> std::make_shared<rclcpp::Node, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&>(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) /usr/include/c++/7/bits/shared_ptr.h:707 (test_subscriber_cpp+0xdc8e)
 26: execute_process.py         305 INFO     [test_subscriber-4]     #24 std::shared_ptr<rclcpp::Node> rclcpp::Node::make_shared<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&>(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&) /ros2_install/install-tsan/rclcpp/include/rclcpp/node.hpp:71 (test_subscriber_cpp+0xdc8e)
 26: execute_process.py         305 INFO     [test_subscriber-4]     #25 main /ros2_install/src/ros2/system_tests/test_communication/test/test_subscriber.cpp:87 (test_subscriber_cpp+0xdc8e)
-26: execute_process.py         305 INFO     [test_subscriber-4]
+26: execute_process.py         305 INFO     [test_subscriber-4] 
 26: execute_process.py         305 INFO     [test_subscriber-4] SUMMARY: ThreadSanitizer: data race (/usr/lib/x86_64-linux-gnu/libtsan.so.0+0x2f447) in __interceptor_close
 26: execute_process.py         305 INFO     [test_subscriber-4] ==================
-Finished <<< data_race_and_lock_order_inversion_interleaved_output

@@ -6,53 +6,81 @@ from typing import Dict, List, Optional, Tuple
 import xml.dom.minidom
 import xml.etree.cElementTree as ET
 
-class _KeysFactory:
+class _StackTrace:
+    key: str
+    masked_lines: Tuple[str]
+
+    def __init__(self, masked_lines: Tuple[str]) -> None:
+        self.masked_lines = masked_lines
+        for masked_line in masked_lines:
+            match = re.match(r'^\s*#X (0xX in|)\s*(?P<key>.*/ros2.*)\s*$', masked_line)
+            if match is not None:
+                self.key = match.groupdict()['key']
+                break
+
+
+class _StacktraceFactory:
     """Finds key stack trace lines in sanitizer error subsections."""
 
     @staticmethod
     def _make_masked_line(line: str) -> str:
         """Masks numbers in a sanitizer error line so that keys from similar errors will match."""
         masked_line = line
+
         masked_line = re.sub(r'0x[\dabcdef]+', '0xX', masked_line)
+        masked_line = re.sub(r'===\d+===', '===X===', masked_line)
         masked_line = re.sub(r' \d+ ', ' X ', masked_line)
         masked_line = re.sub(r'#\d+', '#X', masked_line)
 
         return masked_line
 
     @staticmethod
-    def _make_keys_base(*, lines: Tuple[str], stack_begin_regexes: Tuple[str, ...]) -> Tuple[str]:
-        keys: List[str] = []
+    def _make_stack_trace_base(
+            *, lines: Tuple[str], stack_begin_regexes: Tuple[str, ...]
+    ) -> Tuple[_StackTrace, ...]:
+        stack_traces: List[_StackTrace] = []
 
         lines = iter(lines)
         for stack_begin_regex in stack_begin_regexes:
+            # Find the stack trace we're intrested.
             for line in lines:
-                match = re.match(
-                    stack_begin_regex,
-                    _KeysFactory._make_masked_line(line)
-                )
+                masked_line = _StacktraceFactory._make_masked_line(line)
+                match = re.match(stack_begin_regex, masked_line)
                 if match is not None:
                     break
 
+            # Find the actual first line of the stack trace.
+            masked_lines: List[str] = []
             for line in lines:
-                match = re.match(
-                    r'^\s*#X (0xX in|)\s*(?P<key>.*/ros2.*)\s*$',
-                    _KeysFactory._make_masked_line(line)
-                )
-                if match is not None:
-                    keys.append(match.groupdict()['key'])
+                masked_line = _StacktraceFactory._make_masked_line(line)
+                match = re.match(r'^\s*#X .*$', masked_line)
+                if match:
+                    masked_lines.append(masked_line)
                     break
-            else:
-                # We didn't find one of the keys we were required to find.
-                keys = []
-                break
 
-        return tuple(keys)
+            # Find all the remaining lines of the stack trace.
+            for line in lines:
+                masked_line = _StacktraceFactory._make_masked_line(line)
+                match = re.match(r'^\s*#X .*$', masked_line)
+                if match:
+                    masked_lines.append(masked_line)
+                else:
+                    break
+
+            if masked_lines:
+                stack_traces.append(_StackTrace(tuple(masked_lines)))
+
+        if len(stack_traces) != len(stack_begin_regexes):
+            # We didn't find one of the keys we were required to find.
+            stack_traces = []
+
+        return tuple(stack_traces)
 
     @staticmethod
-    def _make_default_keys(*, lines: Tuple[str]) -> Tuple[str]:
+    def _make_default_stack_traces(*, lines: Tuple[str]) -> Tuple[_StackTrace, ...]:
         # Most sanitizer errors have the only/most significant stack trace first in a subsection, so
         # we assume we've already found the correct stack trace.
-        return _KeysFactory._make_keys_base(
+        return _StacktraceFactory._make_stack_trace_base(
             lines=lines,
             stack_begin_regexes=(
                 r'^.*$',
@@ -60,9 +88,9 @@ class _KeysFactory:
         )
 
     @staticmethod
-    def _make_detected_memory_leaks_keys(*, lines: Tuple[str]) -> Tuple[str]:
+    def _make_detected_memory_leaks_stack_traces(*, lines: Tuple[str]) -> Tuple[_StackTrace, ...]:
         # There is one stack trace per subsection in a "detected memory leaks" error.
-        return _KeysFactory._make_keys_base(
+        return _StacktraceFactory._make_stack_trace_base(
             lines=lines,
             stack_begin_regexes=(
                 r'^Direct leak of X byte\(s\) in X object\(s\) allocated from:$',
@@ -70,9 +98,9 @@ class _KeysFactory:
         )
 
     @staticmethod
-    def _make_data_race_keys(*, lines: Tuple[str]) -> Tuple[str]:
+    def _make_data_race_stack_traces(*, lines: Tuple[str]) -> Tuple[_StackTrace, ...]:
         # There are two stack traces involved a "data race" error, both in the same subsection.
-        return _KeysFactory._make_keys_base(
+        return _StacktraceFactory._make_stack_trace_base(
             lines=lines,
             stack_begin_regexes=(
                 r'^\s+(Read|Write) of size X at 0xX .*$',
@@ -81,10 +109,10 @@ class _KeysFactory:
         )
 
     @staticmethod
-    def _make_lock_order_inversion_keys(*, lines: Tuple[str]) -> Tuple[str]:
+    def _make_lock_order_inversion_stack_traces(*, lines: Tuple[str]) -> Tuple[_StackTrace, ...]:
         # There are two stack traces involved in a "lock-order-inversion" error, both in the same
         # subsection and with identical header lines.
-        return _KeysFactory._make_keys_base(
+        return _StacktraceFactory._make_stack_trace_base(
             lines=lines,
             stack_begin_regexes=(
                 r'^\s+Mutex M\d+ acquired here while holding mutex M\d+ in .*$',
@@ -93,22 +121,22 @@ class _KeysFactory:
         )
 
     @staticmethod
-    def make_keys(*, lines: Tuple[str], error_name: str) -> Tuple[str]:
+    def make_stack_trace(*, lines: Tuple[str], error_name: str) -> Tuple[_StackTrace, ...]:
         if error_name == 'data race':
-            return _KeysFactory._make_data_race_keys(lines=lines)
+            return _StacktraceFactory._make_data_race_stack_traces(lines=lines)
         elif error_name == 'detected memory leaks':
-            return _KeysFactory._make_detected_memory_leaks_keys(lines=lines)
+            return _StacktraceFactory._make_detected_memory_leaks_stack_traces(lines=lines)
         elif error_name == 'lock-order-inversion':
-            return _KeysFactory._make_lock_order_inversion_keys(lines=lines)
+            return _StacktraceFactory._make_lock_order_inversion_stack_traces(lines=lines)
         else:
-            return _KeysFactory._make_default_keys(lines=lines)
+            return _StacktraceFactory._make_default_stack_traces(lines=lines)
 
 
 class _SubSection:
-    keys: Tuple[str]
+    stack_traces: Tuple[_StackTrace]
 
     def __init__(self, *, lines: Tuple[str], error_name: str) -> None:
-        self.keys = _KeysFactory.make_keys(lines=lines, error_name=error_name)
+        self.stack_traces = _StacktraceFactory.make_stack_trace(lines=lines, error_name=error_name)
 
 
 class _Section:
@@ -148,6 +176,7 @@ class SanitizerLogParser:
     def __init__(self) -> None:
         # Holds count of errors seen. This is what will be in the report.
         self._counts = defaultdict(int)
+        self._sample_stack_traces = {}
 
         # Current package and sections that are partially parsed
         self._package: Optional[str] = None
@@ -175,9 +204,17 @@ class SanitizerLogParser:
         """Return a csv representation of reported error/warnings."""
         csv_f_out = StringIO()
         writer = csv.writer(csv_f_out)
-        writer.writerow(['package', 'error_name', 'key', 'count'])
+        writer.writerow(['package', 'error_name', 'key', 'count', 'sample_stack_trace'])
         for (package, error_name, key), count in self._counts.items():
-            writer.writerow([package, error_name, key, count])
+            writer.writerow(
+                [
+                    package,
+                    error_name,
+                    key,
+                    count,
+                    self._sample_stack_traces[(package, error_name, key)]
+                ]
+            )
 
         return csv_f_out.getvalue()
 
@@ -186,7 +223,6 @@ class SanitizerLogParser:
 
     def add_line(self, line: str) -> None:
         """Generate report from log file lines."""
-        line = line.rstrip()
 
         # If we have a new sanitizer section, start gathering lines for it.
         match = re.match(r'^(?P<prefix>.*?)(==\d+==|)(WARNING|ERROR):.*Sanitizer:.*', line)
@@ -202,12 +238,13 @@ class SanitizerLogParser:
                 break
 
         # If this is the last line of a section, create the section and stop gathering lines for it.
-        match = re.match(r'^(?P<prefix>.*)(SUMMARY: .*Sanitizer: .*)$', line)
+        match = re.match(r'^(?P<prefix>.*?)SUMMARY: .*Sanitizer: .*$', line)
         if match is not None:
             prefix = match.groupdict()['prefix']
             section = _Section(lines=tuple(self._section_lines_by_prefix[prefix]))
             for sub_section in section.sub_sections:
-                for key in sub_section.keys:
-                    self._counts[(self._package, section.error_name, key)] += 1
+                for stack_trace in sub_section.stack_traces:
+                    key = (self._package, section.error_name, stack_trace.key)
+                    self._counts[key] += 1
+                    self._sample_stack_traces.setdefault(key, '\n'.join(stack_trace.masked_lines))
             del self._section_lines_by_prefix[prefix]
-            return
