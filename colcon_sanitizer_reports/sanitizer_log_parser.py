@@ -3,7 +3,8 @@ import csv
 from io import StringIO
 import re
 from typing import Dict, List, Optional, Tuple
-
+import xml.dom.minidom
+import xml.etree.cElementTree as ET
 
 class _KeysFactory:
     """Finds key stack trace lines in sanitizer error subsections."""
@@ -151,6 +152,23 @@ class SanitizerLogParser:
         # Current package and sections that are partially parsed
         self._package: Optional[str] = None
         self._section_lines_by_prefix: Dict[str: List[str]] = {}
+
+    @property
+    def xml(self) -> str:
+        """Return a jenkins-compatible xml string representation of reported errors/warnings"""
+        testsuite = ET.Element("testsuite")
+        packages: set(str) = set(str(key[0]) for key in self._counts.keys())
+        testcases: dict(str, ET.Element)
+        for package in packages:
+            testcases[package] = ET.SubElement(testsuite, package)
+        for (package, error_name, key), count in self._counts.items():
+            error = ET.SubElement(testcases[package], str(error_name.replace(' ', '_')))
+            error.set('location', str(key))
+            error.set('count', str(count))
+
+        return xml.dom.minidom.parseString(
+            ET.tostring(testsuite, encoding='UTF-8', method='xml')
+        ).toprettyxml()
 
     @property
     def csv(self) -> str:

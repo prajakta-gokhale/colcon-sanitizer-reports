@@ -39,3 +39,22 @@ class SanitizerReportEventHandler(EventHandlerExtensionPoint):
 
         with open('sanitizer_report.csv', 'w') as report_csv_f_out:
             report_csv_f_out.write(self._log_parser.csv)
+
+        with open('sanitizer_report.xml', 'w') as report_xml_f_out:
+            report_xml_f_out.write(self._log_parser.xml)
+
+
+def main():
+    log_parser = SanitizerLogParser()
+    with open(
+            '/Users/prajaktg/workspaces/colcon-sanitizer-reports/'
+            'colcon_sanitizer_reports/asan.log', 'r') as tsan_f_in:
+        for line in tsan_f_in:
+            log_parser.add_line(line)
+
+    with open('sanitizer_report.xml', 'w') as report_xml_f_out:
+        report_xml_f_out.write(log_parser.xml)
+
+
+if __name__ == '__main__':
+    main()
