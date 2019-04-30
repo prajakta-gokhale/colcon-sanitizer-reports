@@ -1,0 +1,80 @@
+<?xml version="1.0" ?>
+<testsuite>
+        <testcase errors="2" name="test_communication">
+                <error count="1" location="eprosima::fastrtps::rtps::UDPTransportInterface::CloseInputChannel(eprosima::fastrtps::rtps::Locator_t const&amp;) /ros2_ws/src/eProsima/Fast-RTPS/src/cpp/transp
+ort/UDPTransportInterface.cpp:108 (libfastrtps.so.1+0xX)" type="data_race">    #X asio::detail::reactive_socket_service_base::construct(asio::detail::reactive_socket_service_base::base_implementation_type
+&amp;) /usr/include/asio/detail/impl/reactive_socket_service_base.ipp:44 (libfastrtps.so.1+0xX)
+    #X asio::detail::reactive_socket_service_base::close(asio::detail::reactive_socket_service_base::base_implementation_type&amp;, std::error_code&amp;) /usr/include/asio/detail/impl/reactive_socket_serv
+ice_base.ipp:116 (libfastrtps.so.1+0xX)
+    #X asio::datagram_socket_service&lt;asio::ip::udp&gt;::close(asio::detail::reactive_socket_service&lt;asio::ip::udp&gt;::implementation_type&amp;, std::error_code&amp;) /usr/include/asio/datagram_sock
+et_service.hpp:169 (libfastrtps.so.1+0xX)
+    #X asio::basic_socket&lt;asio::ip::udp, asio::datagram_socket_service&lt;asio::ip::udp&gt; &gt;::close() /usr/include/asio/basic_socket.hpp:355 (libfastrtps.so.1+0xX)
+    #X eprosima::fastrtps::rtps::UDPTransportInterface::CloseInputChannel(eprosima::fastrtps::rtps::Locator_t const&amp;) /ros2_ws/src/eProsima/Fast-RTPS/src/cpp/transport/UDPTransportInterface.cpp:108 (l
+ibfastrtps.so.1+0xX)
+    #X operator() /ros2_ws/src/eProsima/Fast-RTPS/src/cpp/rtps/network/ReceiverResource.cpp:41 (libfastrtps.so.1+0xX)
+    #X _M_invoke /usr/include/c++/7/bits/std_function.h:316 (libfastrtps.so.1+0xX)
+    #X std::function&lt;void ()&gt;::operator()() const /usr/include/c++/7/bits/std_function.h:706 (libfastrtps.so.1+0xX)
+    #X eprosima::fastrtps::rtps::ReceiverResource::~ReceiverResource() /ros2_ws/src/eProsima/Fast-RTPS/src/cpp/rtps/network/ReceiverResource.cpp:105 (libfastrtps.so.1+0xX)
+    #X eprosima::fastrtps::rtps::ReceiverResource::~ReceiverResource() /ros2_ws/src/eProsima/Fast-RTPS/src/cpp/rtps/network/ReceiverResource.cpp:107 (libfastrtps.so.1+0xX)
+    #X std::_Sp_counted_ptr&lt;eprosima::fastrtps::rtps::ReceiverResource*, (__gnu_cxx::_Lock_policy)2&gt;::_M_dispose() /usr/include/c++/7/bits/shared_ptr_base.h:376 (libfastrtps.so.1+0xX)
+    #X std::_Sp_counted_base&lt;(__gnu_cxx::_Lock_policy)2&gt;::_M_release() /usr/include/c++/7/bits/shared_ptr_base.h:154 (libfastrtps.so.1+0xX)
+    #X std::__shared_count&lt;(__gnu_cxx::_Lock_policy)2&gt;::~__shared_count() /usr/include/c++/7/bits/shared_ptr_base.h:684 (libfastrtps.so.1+0xX)
+    #X std::__shared_ptr&lt;eprosima::fastrtps::rtps::ReceiverResource, (__gnu_cxx::_Lock_policy)2&gt;::~__shared_ptr() /usr/include/c++/7/bits/shared_ptr_base.h:1123 (libfastrtps.so.1+0xX)
+    #X std::shared_ptr&lt;eprosima::fastrtps::rtps::ReceiverResource&gt;::~shared_ptr() /usr/include/c++/7/bits/shared_ptr.h:93 (libfastrtps.so.1+0xX)
+    #X eprosima::fastrtps::rtps::RTPSParticipantImpl::ReceiverControlBlock::~ReceiverControlBlock() /ros2_ws/src/eProsima/Fast-RTPS/src/cpp/rtps/participant/RTPSParticipantImpl.h:95 (libfastrtps.so.1+0xX)
+    #X void __gnu_cxx::new_allocator&lt;std::_List_node&lt;eprosima::fastrtps::rtps::RTPSParticipantImpl::ReceiverControlBlock&gt; &gt;::destroy&lt;eprosima::fastrtps::rtps::RTPSParticipantImpl::ReceiverC
+ontrolBlock&gt;(eprosima::fastrtps::rtps::RTPSParticipantImpl::ReceiverControlBlock*) /usr/include/c++/7/ext/new_allocator.h:140 (libfastrtps.so.1+0xX)
+    #X void std::allocator_traits&lt;std::allocator&lt;std::_List_node&lt;eprosima::fastrtps::rtps::RTPSParticipantImpl::ReceiverControlBlock&gt; &gt; &gt;::destroy&lt;eprosima::fastrtps::rtps::RTPSPartic
+ipantImpl::ReceiverControlBlock&gt;(std::allocator&lt;std::_List_node&lt;eprosima::fastrtps::rtps::RTPSParticipantImpl::ReceiverControlBlock&gt; &gt;&amp;, eprosima::fastrtps::rtps::RTPSParticipantImpl::R
+eceiverControlBlock*) /usr/include/c++/7/bits/alloc_traits.h:487 (libfastrtps.so.1+0xX)
+    #X std::__cxx11::_List_base&lt;eprosima::fastrtps::rtps::RTPSParticipantImpl::ReceiverControlBlock, std::allocator&lt;eprosima::fastrtps::rtps::RTPSParticipantImpl::ReceiverControlBlock&gt; &gt;::_M_c
+lear() /usr/include/c++/7/bits/list.tcc:76 (libfastrtps.so.1+0xX)
+    #X std::__cxx11::list&lt;eprosima::fastrtps::rtps::RTPSParticipantImpl::ReceiverControlBlock, std::allocator&lt;eprosima::fastrtps::rtps::RTPSParticipantImpl::ReceiverControlBlock&gt; &gt;::clear() /u
+sr/include/c++/7/bits/stl_list.h:1406 (libfastrtps.so.1+0xX)
+    #X eprosima::fastrtps::rtps::RTPSParticipantImpl::~RTPSParticipantImpl() /ros2_ws/src/eProsima/Fast-RTPS/src/cpp/rtps/participant/RTPSParticipantImpl.cpp:275 (libfastrtps.so.1+0xX)
+    #X eprosima::fastrtps::rtps::RTPSParticipantImpl::~RTPSParticipantImpl() /ros2_ws/src/eProsima/Fast-RTPS/src/cpp/rtps/participant/RTPSParticipantImpl.cpp:283 (libfastrtps.so.1+0xX)
+    #X eprosima::fastrtps::rtps::RTPSDomain::removeRTPSParticipant_nts(__gnu_cxx::__normal_iterator&lt;std::pair&lt;eprosima::fastrtps::rtps::RTPSParticipant*, eprosima::fastrtps::rtps::RTPSParticipantImp
+l*&gt;*, std::vector&lt;std::pair&lt;eprosima::fastrtps::rtps::RTPSParticipant*, eprosima::fastrtps::rtps::RTPSParticipantImpl*&gt;, std::allocator&lt;std::pair&lt;eprosima::fastrtps::rtps::RTPSParticipan
+t*, eprosima::fastrtps::rtps::RTPSParticipantImpl*&gt; &gt; &gt; &gt;) /ros2_ws/src/eProsima/Fast-RTPS/src/cpp/rtps/RTPSDomain.cpp:185 (libfastrtps.so.1+0xX)
+    #X eprosima::fastrtps::rtps::RTPSDomain::removeRTPSParticipant(eprosima::fastrtps::rtps::RTPSParticipant*) /ros2_ws/src/eProsima/Fast-RTPS/src/cpp/rtps/RTPSDomain.cpp:173 (libfastrtps.so.1+0xX)
+    #X eprosima::fastrtps::ParticipantImpl::~ParticipantImpl() /ros2_ws/src/eProsima/Fast-RTPS/src/cpp/participant/ParticipantImpl.cpp:79 (libfastrtps.so.1+0xX)
+    #X eprosima::fastrtps::ParticipantImpl::~ParticipantImpl() /ros2_ws/src/eProsima/Fast-RTPS/src/cpp/participant/ParticipantImpl.cpp:81 (libfastrtps.so.1+0xX)
+    #X eprosima::fastrtps::Domain::removeParticipant(eprosima::fastrtps::Participant*) /ros2_ws/src/eProsima/Fast-RTPS/src/cpp/Domain.cpp:95 (libfastrtps.so.1+0xX)
+    #X rmw_fastrtps_shared_cpp::__rmw_destroy_node(char const*, rmw_node_t*) /ros2_ws/src/ros2/rmw_fastrtps/rmw_fastrtps_shared_cpp/src/rmw_node.cpp:352 (librmw_fastrtps_shared_cpp.so+0xX)
+    #X rmw_destroy_node /ros2_ws/src/ros2/rmw_fastrtps/rmw_fastrtps_cpp/src/rmw_node.cpp:57 (librmw_fastrtps_cpp.so+0xX)
+    #X rcl_node_fini /ros2_ws/src/ros2/rcl/rcl/src/rcl/node.c:431 (librcl.so+0xX)
+    #X operator() /ros2_ws/src/ros2/rclcpp/rclcpp/src/rclcpp/node_interfaces/node_base.cpp:122 (librclcpp.so+0xX)
+    #X _M_dispose /usr/include/c++/7/bits/shared_ptr_base.h:470 (librclcpp.so+0xX)
+    #X std::_Sp_counted_base&lt;(__gnu_cxx::_Lock_policy)2&gt;::_M_release() /usr/include/c++/7/bits/shared_ptr_base.h:154 (librclcpp.so+0xX)
+    #X std::__shared_count&lt;(__gnu_cxx::_Lock_policy)2&gt;::~__shared_count() /usr/include/c++/7/bits/shared_ptr_base.h:684 (librclcpp.so+0xX)
+    #X std::__shared_ptr&lt;rcl_node_t, (__gnu_cxx::_Lock_policy)2&gt;::~__shared_ptr() /usr/include/c++/7/bits/shared_ptr_base.h:1123 (librclcpp.so+0xX)
+    #X std::shared_ptr&lt;rcl_node_t&gt;::~shared_ptr() /usr/include/c++/7/bits/shared_ptr.h:93 (librclcpp.so+0xX)
+    #X rclcpp::node_interfaces::NodeBase::~NodeBase() /ros2_ws/src/ros2/rclcpp/rclcpp/src/rclcpp/node_interfaces/node_base.cpp:138 (librclcpp.so+0xX)
+    #X rclcpp::node_interfaces::NodeBase::~NodeBase() /ros2_ws/src/ros2/rclcpp/rclcpp/src/rclcpp/node_interfaces/node_base.cpp:150 (librclcpp.so+0xX)
+    #X std::_Sp_counted_ptr&lt;rclcpp::node_interfaces::NodeBase*, (__gnu_cxx::_Lock_policy)2&gt;::_M_dispose() /usr/include/c++/7/bits/shared_ptr_base.h:376 (librclcpp.so+0xX)
+    #X std::_Sp_counted_base&lt;(__gnu_cxx::_Lock_policy)2&gt;::_M_release() /usr/include/c++/7/bits/shared_ptr_base.h:154 (librclcpp.so+0xX)
+    #X std::__shared_count&lt;(__gnu_cxx::_Lock_policy)2&gt;::~__shared_count() /usr/include/c++/7/bits/shared_ptr_base.h:684 (librclcpp.so+0xX)
+    #X std::__shared_ptr&lt;rclcpp::node_interfaces::NodeBaseInterface, (__gnu_cxx::_Lock_policy)2&gt;::~__shared_ptr() /usr/include/c++/7/bits/shared_ptr_base.h:1123 (librclcpp.so+0xX)
+    #X std::shared_ptr&lt;rclcpp::node_interfaces::NodeBaseInterface&gt;::~shared_ptr() /usr/include/c++/7/bits/shared_ptr.h:93 (librclcpp.so+0xX)
+    #X rclcpp::Node::~Node() /ros2_ws/src/ros2/rclcpp/rclcpp/src/rclcpp/node.cpp:178 (librclcpp.so+0xX)
+    #X void __gnu_cxx::new_allocator&lt;rclcpp::Node&gt;::destroy&lt;rclcpp::Node&gt;(rclcpp::Node*) /usr/include/c++/7/ext/new_allocator.h:140 (test_subscriber_cpp+0xX)
+    #X void std::allocator_traits&lt;std::allocator&lt;rclcpp::Node&gt; &gt;::destroy&lt;rclcpp::Node&gt;(std::allocator&lt;rclcpp::Node&gt;&amp;, rclcpp::Node*) /usr/include/c++/7/bits/alloc_traits.h:487 (test_subscriber_cpp+0xX)
+    #X std::_Sp_counted_ptr_inplace&lt;rclcpp::Node, std::allocator&lt;rclcpp::Node&gt;, (__gnu_cxx::_Lock_policy)2&gt;::_M_dispose() /usr/include/c++/7/bits/shared_ptr_base.h:535 (test_subscriber_cpp+0xX)
+    #X std::_Sp_counted_base&lt;(__gnu_cxx::_Lock_policy)2&gt;::_M_release() /usr/include/c++/7/bits/shared_ptr_base.h:154 (test_subscriber_cpp+0xX)
+    #X std::_Sp_counted_base&lt;(__gnu_cxx::_Lock_policy)2&gt;::_M_release() /usr/include/c++/7/bits/shared_ptr_base.h:151 (test_subscriber_cpp+0xX)
+    #X std::__shared_count&lt;(__gnu_cxx::_Lock_policy)2&gt;::~__shared_count() /usr/include/c++/7/bits/shared_ptr_base.h:684 (test_subscriber_cpp+0xX)
+    #X std::__shared_ptr&lt;rclcpp::Node, (__gnu_cxx::_Lock_policy)2&gt;::~__shared_ptr() /usr/include/c++/7/bits/shared_ptr_base.h:1123 (test_subscriber_cpp+0xX)
+    #X std::shared_ptr&lt;rclcpp::Node&gt;::~shared_ptr() /usr/include/c++/7/bits/shared_ptr.h:93 (test_subscriber_cpp+0xX)
+    #X main /ros2_ws/src/ros2/system_tests/test_communication/test/test_subscriber.cpp:87 (test_subscriber_cpp+0xX)</error>
+                <error count="1" location="eprosima::fastrtps::rtps::UDPTransportInterface::Receive(eprosima::fastrtps::rtps::UDPChannelResource*, unsigned char*, unsigned int, unsigned int&amp;, eprosima::fastrtps::rtps::Locator_t&amp;) /ros2_ws/src/eProsima/Fast-RTPS/src/cpp/transport/UDPTransportInterface.cpp:412 (libfastrtps.so.1+0xX)" type="data_race">    #X unsigned long asio::datagram_socket_service&lt;asio::ip::udp&gt;::receive_from&lt;asio::mutable_buffers_1&gt;(asio::detail::reactive_socket_service&lt;asio::ip::udp&gt;::implementation_type&amp;, asio::mutable_buffers_1 const&amp;, asio::ip::basic_endpoint&lt;asio::ip::udp&gt;&amp;, int, std::error_code&amp;) /usr/include/asio/datagram_socket_service.hpp:395 (libfastrtps.so.1+0xX)
+    #X unsigned long asio::basic_datagram_socket&lt;asio::ip::udp, asio::datagram_socket_service&lt;asio::ip::udp&gt; &gt;::receive_from&lt;asio::mutable_buffers_1&gt;(asio::mutable_buffers_1 const&amp;, asio::ip::basic_endpoint&lt;asio::ip::udp&gt;&amp;) /usr/include/asio/basic_datagram_socket.hpp:789 (libfastrtps.so.1+0xX)
+    #X eprosima::fastrtps::rtps::UDPTransportInterface::Receive(eprosima::fastrtps::rtps::UDPChannelResource*, unsigned char*, unsigned int, unsigned int&amp;, eprosima::fastrtps::rtps::Locator_t&amp;) /ros2_ws/src/eProsima/Fast-RTPS/src/cpp/transport/UDPTransportInterface.cpp:412 (libfastrtps.so.1+0xX)
+    #X eprosima::fastrtps::rtps::UDPTransportInterface::performListenOperation(eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t) /ros2_ws/src/eProsima/Fast-RTPS/src/cpp/transport/UDPTransportInterface.cpp:387 (libfastrtps.so.1+0xX)
+    #X void std::__invoke_impl&lt;void, void (eprosima::fastrtps::rtps::UDPTransportInterface::*)(eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t), eprosima::fastrtps::rtps::UDPTransportInterface*, eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t&gt;(std::__invoke_memfun_deref, void (eprosima::fastrtps::rtps::UDPTransportInterface::*&amp;&amp;)(eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t), eprosima::fastrtps::rtps::UDPTransportInterface*&amp;&amp;, eprosima::fastrtps::rtps::UDPChannelResource*&amp;&amp;, eprosima::fastrtps::rtps::Locator_t&amp;&amp;) /usr/include/c++/7/bits/invoke.h:73 (libfastrtps.so.1+0xX)
+    #X std::__invoke_result&lt;void (eprosima::fastrtps::rtps::UDPTransportInterface::*)(eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t), eprosima::fastrtps::rtps::UDPTransportInterface*, eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t&gt;::type std::__invoke&lt;void (eprosima::fastrtps::rtps::UDPTransportInterface::*)(eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t), eprosima::fastrtps::rtps::UDPTransportInterface*, eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t&gt;(void (eprosima::fastrtps::rtps::UDPTransportInterface::*&amp;&amp;)(eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t), eprosima::fastrtps::rtps::UDPTransportInterface*&amp;&amp;, eprosima::fastrtps::rtps::UDPChannelResource*&amp;&amp;, eprosima::fastrtps::rtps::Locator_t&amp;&amp;) /usr/include/c++/7/bits/invoke.h:95 (libfastrtps.so.1+0xX)
+    #X decltype (__invoke((_S_declval&lt;0ul&gt;)(), (_S_declval&lt;1ul&gt;)(), (_S_declval&lt;2ul&gt;)(), (_S_declval&lt;3ul&gt;)())) std::thread::_Invoker&lt;std::tuple&lt;void (eprosima::fastrtps::rtps::UDPTransportInterface::*)(eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t), eprosima::fastrtps::rtps::UDPTransportInterface*, eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t&gt; &gt;::_M_invoke&lt;0ul, 1ul, 2ul, 3ul&gt;(std::_Index_tuple&lt;0ul, 1ul, 2ul, 3ul&gt;) /usr/include/c++/7/thread:234 (libfastrtps.so.1+0xX)
+    #X std::thread::_Invoker&lt;std::tuple&lt;void (eprosima::fastrtps::rtps::UDPTransportInterface::*)(eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t), eprosima::fastrtps::rtps::UDPTransportInterface*, eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t&gt; &gt;::operator()() /usr/include/c++/7/thread:243 (libfastrtps.so.1+0xX)
+    #X std::thread::_State_impl&lt;std::thread::_Invoker&lt;std::tuple&lt;void (eprosima::fastrtps::rtps::UDPTransportInterface::*)(eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t), eprosima::fastrtps::rtps::UDPTransportInterface*, eprosima::fastrtps::rtps::UDPChannelResource*, eprosima::fastrtps::rtps::Locator_t&gt; &gt; &gt;::_M_run() /usr/include/c++/7/thread:186 (libfastrtps.so.1+0xX)
+    #X &lt;null&gt; &lt;null&gt; (libstdc++.so.6+0xX)</error>
+        </testcase>
+</testsuite>

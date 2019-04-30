@@ -6,6 +6,7 @@ from typing import Dict, List, Optional, Tuple
 import xml.dom.minidom
 import xml.etree.cElementTree as ET
 
+
 class _StackTrace:
     key: str
     masked_lines: Tuple[str]
@@ -186,14 +187,22 @@ class SanitizerLogParser:
     def xml(self) -> str:
         """Return a jenkins-compatible xml string representation of reported errors/warnings"""
         testsuite = ET.Element("testsuite")
-        packages: set(str) = set(str(key[0]) for key in self._counts.keys())
-        testcases: dict(str, ET.Element)
+        packages: set[str] = set(str(key[0]) for key in self._counts.keys())
+        testcases: dict(str, ET.Element) = defaultdict(ET.Element)
+        error_count_by_package: dict(str, int) = defaultdict(int)
         for package in packages:
-            testcases[package] = ET.SubElement(testsuite, package)
+            testcases[package] = ET.SubElement(testsuite, 'testcase', {'name': str(package)})
+
         for (package, error_name, key), count in self._counts.items():
-            error = ET.SubElement(testcases[package], str(error_name.replace(' ', '_')))
+            error = ET.SubElement(testcases[package], 'error')
+            error.set('type', str(error_name.replace(' ', '_')))
             error.set('location', str(key))
             error.set('count', str(count))
+            error.text = self._sample_stack_traces[(package, error_name, key)]
+            error_count_by_package[package] += 1
+
+        for package in packages:
+            testcases[package].set('errors', str(error_count_by_package[package]))
 
         return xml.dom.minidom.parseString(
             ET.tostring(testsuite, encoding='UTF-8', method='xml')

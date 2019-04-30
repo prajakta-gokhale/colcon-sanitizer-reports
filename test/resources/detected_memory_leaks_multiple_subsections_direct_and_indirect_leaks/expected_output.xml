@@ -1,0 +1,75 @@
+<?xml version="1.0" ?>
+<testsuite>
+        <testcase errors="3" name="test_communication">
+                <error count="1" location="rosidl_generator_c__octet__Sequence__init (/ros2_install/rosidl_generator_c/lib/librosidl_generator_c.so+0xX)" type="detected_memory_leaks">    #X 0xX in __inter
+ceptor_malloc (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xX)
+    #X 0xX in rosidl_generator_c__octet__Sequence__init (/ros2_install/rosidl_generator_c/lib/librosidl_generator_c.so+0xX)
+    #X 0xX in rosidl_generator_c__byte__Sequence__init (/ros2_install/rosidl_generator_c/lib/librosidl_generator_c.so+0xX)
+    #X 0xX in void get_message&lt;test_msgs__msg__DynamicArrayPrimitives&gt;(test_msgs__msg__DynamicArrayPrimitives*, unsigned long) (/ros2_build/test_communication/test_messages_c__rmw_fastrtps_cpp+0xX)
+    #X 0xX in void verify_message&lt;test_msgs__msg__DynamicArrayPrimitives&gt;(test_msgs__msg__DynamicArrayPrimitives&amp;, unsigned long) (/ros2_build/test_communication/test_messages_c__rmw_fastrtps_cp
+p+0xX)
+    #X 0xX in void verify_message&lt;test_msgs__msg__DynamicArrayPrimitivesNested&gt;(test_msgs__msg__DynamicArrayPrimitivesNested&amp;, unsigned long) (/ros2_build/test_communication/test_messages_c__rmw
+_fastrtps_cpp+0xX)
+    #X 0xX in void TestMessagesFixture::test_message_type&lt;test_msgs__msg__DynamicArrayPrimitivesNested&gt;(char const*, rosidl_message_type_support_t const*, rcl_context_t*) (/ros2_build/test_communica
+tion/test_messages_c__rmw_fastrtps_cpp+0xX)
+    #X 0xX in TestMessagesFixture_test_dynamicarraynestedprimitives_Test::TestBody() (/ros2_build/test_communication/test_messages_c__rmw_fastrtps_cpp+0xX)
+    #X 0xX in void testing::internal::HandleSehExceptionsInMethodIfSupported&lt;testing::Test, void&gt;(testing::Test*, void (testing::Test::*)(), char const*) (/ros2_build/test_communication/test_message
+s_c__rmw_fastrtps_cpp+0xX)
+    #X 0xX in void testing::internal::HandleExceptionsInMethodIfSupported&lt;testing::Test, void&gt;(testing::Test*, void (testing::Test::*)(), char const*) (/ros2_build/test_communication/test_messages_c
+__rmw_fastrtps_cpp+0xX)
+    #X 0xX in testing::Test::Run() (/ros2_build/test_communication/test_messages_c__rmw_fastrtps_cpp+0xX)
+    #X 0xX in testing::TestInfo::Run() (/ros2_build/test_communication/test_messages_c__rmw_fastrtps_cpp+0xX)
+    #X 0xX in testing::TestCase::Run() (/ros2_build/test_communication/test_messages_c__rmw_fastrtps_cpp+0xX)
+    #X 0xX in testing::internal::UnitTestImpl::RunAllTests() (/ros2_build/test_communication/test_messages_c__rmw_fastrtps_cpp+0xX)
+    #X 0xX in bool testing::internal::HandleSehExceptionsInMethodIfSupported&lt;testing::internal::UnitTestImpl, bool&gt;(testing::internal::UnitTestImpl*, bool (testing::internal::UnitTestImpl::*)(), cha
+r const*) (/ros2_build/test_communication/test_messages_c__rmw_fastrtps_cpp+0xX)
+    #X 0xX in bool testing::internal::HandleExceptionsInMethodIfSupported&lt;testing::internal::UnitTestImpl, bool&gt;(testing::internal::UnitTestImpl*, bool (testing::internal::UnitTestImpl::*)(), char c
+onst*) (/ros2_build/test_communication/test_messages_c__rmw_fastrtps_cpp+0xX)
+    #X 0xX in testing::UnitTest::Run() (/ros2_build/test_communication/test_messages_c__rmw_fastrtps_cpp+0xX)
+    #X 0xX in RUN_ALL_TESTS() (/ros2_build/test_communication/test_messages_c__rmw_fastrtps_cpp+0xX)
+    #X 0xX in main (/ros2_build/test_communication/test_messages_c__rmw_fastrtps_cpp+0xX)
+    #X 0xX in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0xX)</error>
+                <error count="1" location="rosidl_generator_c__boolean__Sequence__init (/ros2_install/rosidl_generator_c/lib/librosidl_generator_c.so+0xX)" type="detected_memory_leaks">    #X 0xX in __int
+erceptor_malloc (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xX)
+    #X 0xX in rosidl_generator_c__boolean__Sequence__init (/ros2_install/rosidl_generator_c/lib/librosidl_generator_c.so+0xX)
+    #X 0xX in rosidl_generator_c__bool__Sequence__init (/ros2_install/rosidl_generator_c/lib/librosidl_generator_c.so+0xX)
+    #X 0xX in void get_message&lt;test_msgs__msg__DynamicArrayPrimitives&gt;(test_msgs__msg__DynamicArrayPrimitives*, unsigned long) (/ros2_build/test_communication/test_messages_c__rmw_fastrtps_cpp+0xX)
+    #X 0xX in void verify_message&lt;test_msgs__msg__DynamicArrayPrimitives&gt;(test_msgs__msg__DynamicArrayPrimitives&amp;, unsigned long) (/ros2_build/test_communication/test_messages_c__rmw_fastrtps_cp
+p+0xX)
+    #X 0xX in void verify_message&lt;test_msgs__msg__DynamicArrayPrimitivesNested&gt;(test_msgs__msg__DynamicArrayPrimitivesNested&amp;, unsigned long) (/ros2_build/test_communication/test_messages_c__rmw
+_fastrtps_cpp+0xX)
+    #X 0xX in void TestMessagesFixture::test_message_type&lt;test_msgs__msg__DynamicArrayPrimitivesNested&gt;(char const*, rosidl_message_type_support_t const*, rcl_context_t*) (/ros2_build/test_communica
+tion/test_messages_c__rmw_fastrtps_cpp+0xX)
+    #X 0xX in TestMessagesFixture_test_dynamicarraynestedprimitives_Test::TestBody() (/ros2_build/test_communication/test_messages_c__rmw_fastrtps_cpp+0xX)
+    #X 0xX in void testing::internal::HandleSehExceptionsInMethodIfSupported&lt;testing::Test, void&gt;(testing::Test*, void (testing::Test::*)(), char const*) (/ros2_build/test_communication/test_message
+s_c__rmw_fastrtps_cpp+0xX)
+    #X 0xX in void testing::internal::HandleExceptionsInMethodIfSupported&lt;testing::Test, void&gt;(testing::Test*, void (testing::Test::*)(), char const*) (/ros2_build/test_communication/test_messages_c
+__rmw_fastrtps_cpp+0xX)
+    #X 0xX in testing::Test::Run() (/ros2_build/test_communication/test_messages_c__rmw_fastrtps_cpp+0xX)
+    #X 0xX in testing::TestInfo::Run() (/ros2_build/test_communication/test_messages_c__rmw_fastrtps_cpp+0xX)
+    #X 0xX in testing::TestCase::Run() (/ros2_build/test_communication/test_messages_c__rmw_fastrtps_cpp+0xX)
+    #X 0xX in testing::internal::UnitTestImpl::RunAllTests() (/ros2_build/test_communication/test_messages_c__rmw_fastrtps_cpp+0xX)
+    #X 0xX in bool testing::internal::HandleSehExceptionsInMethodIfSupported&lt;testing::internal::UnitTestImpl, bool&gt;(testing::internal::UnitTestImpl*, bool (testing::internal::UnitTestImpl::*)(), char const*) (/ros2_build/test_communication/test_messages_c__rmw_fastrtps_cpp+0xX)
+    #X 0xX in bool testing::internal::HandleExceptionsInMethodIfSupported&lt;testing::internal::UnitTestImpl, bool&gt;(testing::internal::UnitTestImpl*, bool (testing::internal::UnitTestImpl::*)(), char const*) (/ros2_build/test_communication/test_messages_c__rmw_fastrtps_cpp+0xX)
+    #X 0xX in testing::UnitTest::Run() (/ros2_build/test_communication/test_messages_c__rmw_fastrtps_cpp+0xX)
+    #X 0xX in RUN_ALL_TESTS() (/ros2_build/test_communication/test_messages_c__rmw_fastrtps_cpp+0xX)
+    #X 0xX in main (/ros2_build/test_communication/test_messages_c__rmw_fastrtps_cpp+0xX)
+    #X 0xX in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0xX)</error>
+                <error count="6" location="rclcpp::NodeOptions::get_rcl_node_options() const (/ros2_install/rclcpp/lib/librclcpp.so+0xX)" type="detected_memory_leaks">    #X 0xX in operator new(unsigned long) (/usr/lib/x86_64-linux-gnu/libasan.so.4+0xX)
+    #X 0xX in rclcpp::NodeOptions::get_rcl_node_options() const (/ros2_install/rclcpp/lib/librclcpp.so+0xX)
+    #X 0xX in rclcpp::node_interfaces::NodeBase::NodeBase(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;, rclcpp::NodeOptions const&amp;) (/ros2_install/rclcpp/lib/librclcpp.so+0xX)
+    #X 0xX in rclcpp::Node::Node(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;, rclcpp::NodeOptions const&amp;) (/ros2_install/rclcpp/lib/librclcpp.so+0xX)
+    #X 0xX in rclcpp::Node::Node(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;, rclcpp::NodeOptions const&amp;) (/ros2_install/rclcpp/lib/librclcpp.so+0xX)
+    #X 0xX in void __gnu_cxx::new_allocator&lt;rclcpp::Node&gt;::construct&lt;rclcpp::Node, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;(rclcpp::Node*, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;&amp;&amp;) (/ros2_build/test_communication/test_publisher_subscriber_cpp+0xX)
+    #X 0xX in void std::allocator_traits&lt;std::allocator&lt;rclcpp::Node&gt; &gt;::construct&lt;rclcpp::Node, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;(std::allocator&lt;rclcpp::Node&gt;&amp;, rclcpp::Node*, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;&amp;&amp;) (/ros2_build/test_communication/test_publisher_subscriber_cpp+0xX)
+    #X 0xX in std::_Sp_counted_ptr_inplace&lt;rclcpp::Node, std::allocator&lt;rclcpp::Node&gt;, (__gnu_cxx::_Lock_policy)2&gt;::_Sp_counted_ptr_inplace&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;(std::allocator&lt;rclcpp::Node&gt;, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;&amp;&amp;) (/ros2_build/test_communication/test_publisher_subscriber_cpp+0xX)
+    #X 0xX in std::__shared_count&lt;(__gnu_cxx::_Lock_policy)2&gt;::__shared_count&lt;rclcpp::Node, std::allocator&lt;rclcpp::Node&gt;, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;(std::_Sp_make_shared_tag, rclcpp::Node*, std::allocator&lt;rclcpp::Node&gt; const&amp;, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;&amp;&amp;) (/ros2_build/test_communication/test_publisher_subscriber_cpp+0xX)
+    #X 0xX in std::__shared_ptr&lt;rclcpp::Node, (__gnu_cxx::_Lock_policy)2&gt;::__shared_ptr&lt;std::allocator&lt;rclcpp::Node&gt;, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;(std::_Sp_make_shared_tag, std::allocator&lt;rclcpp::Node&gt; const&amp;, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;&amp;&amp;) (/ros2_build/test_communication/test_publisher_subscriber_cpp+0xX)
+    #X 0xX in std::shared_ptr&lt;rclcpp::Node&gt;::shared_ptr&lt;std::allocator&lt;rclcpp::Node&gt;, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;(std::_Sp_make_shared_tag, std::allocator&lt;rclcpp::Node&gt; const&amp;, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;&amp;&amp;) (/ros2_build/test_communication/test_publisher_subscriber_cpp+0xX)
+    #X 0xX in std::shared_ptr&lt;rclcpp::Node&gt; std::allocate_shared&lt;rclcpp::Node, std::allocator&lt;rclcpp::Node&gt;, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;(std::allocator&lt;rclcpp::Node&gt; const&amp;, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;&amp;&amp;) (/ros2_build/test_communication/test_publisher_subscriber_cpp+0xX)
+    #X 0xX in std::shared_ptr&lt;rclcpp::Node&gt; std::make_shared&lt;rclcpp::Node, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;&amp;&amp;) (/ros2_build/test_communication/test_publisher_subscriber_cpp+0xX)
+    #X 0xX in std::shared_ptr&lt;rclcpp::Node&gt; rclcpp::Node::make_shared&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;&amp;&amp;) (/ros2_build/test_communication/test_publisher_subscriber_cpp+0xX)
+    #X 0xX in main (/ros2_build/test_communication/test_publisher_subscriber_cpp+0xX)
+    #X 0xX in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0xX)</error>
+        </testcase>
+</testsuite>
